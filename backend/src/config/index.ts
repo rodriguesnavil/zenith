@@ -6,13 +6,20 @@ export interface Config {
     env: string,
     apiPort: number | string,
     port: number | string,
-    mongo: MongoConfig
+    mongo: MongoConfig,
+    secret: string,
+    jwtSecret: string,
+    jwtTokenExpiry: string
 }
 
 config();
 const env = process.env.NODE_ENV || 'development';
 const apiPort = process.env.APIPORT || 5000;
 const port = process.env.PORT || 5000;
+
+const secret = process.env.SECRET_MESSAGE;
+const jwtTokenExpiry = process.env.JWTTOKENEXPIRY;
+const jwtSecret = process.env.JWTSECRET;
 
 const mongo: MongoConfig = {
     uri: process.env.MONGO_URI
@@ -22,7 +29,10 @@ const appConfig: Config = {
     env,
     apiPort,
     port,
-    mongo
+    mongo,
+    secret,
+    jwtSecret,
+    jwtTokenExpiry,
 }
 export {
     appConfig
