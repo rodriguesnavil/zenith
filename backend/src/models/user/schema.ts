@@ -38,7 +38,23 @@ const userSchema = {
         type: mongoose.Schema.Types.Mixed,
         required: true,
         default: false
+    },
+    roles: {
+        type: [String],
+        required:true,
+        default:["author"]
+    },
+    designation:{
+        type: String,
+        required:true,
+        default:false
+    },
+    affliations: {
+        type:[String],
+        required:true,
+        default:false
     }
+    
 }
 
 export const schema = userSchema;
