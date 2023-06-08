@@ -1,7 +1,7 @@
 import * as express from 'express';
 import validateRequest = require("../../middlewares/validateSchema");
 import * as Joi from "joi";
-import {loginUser} from './../../controllers/v1/user.controller'
+import {insertUser} from './../../controllers/v1/user.controller'
 import {globals} from './../../constants'
 
 const router = express.Router();
@@ -11,6 +11,6 @@ const UserDTO = Joi.object({
 })
 
 //router.post('/user', validateRequest(UserDTO), loginUser);
-router.post('/user', loginUser);
+router.post('/user', insertUser);
 
 export = router;

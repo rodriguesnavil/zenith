@@ -38,6 +38,11 @@ const userSchema = {
         type: mongoose.Schema.Types.Mixed,
         required: true,
         default: false
+    },
+    role: {
+        type: [String],
+        required: true,
+        default: "author"
     }
 }
 

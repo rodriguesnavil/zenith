@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import UserService from "../../services/user.service";
 import { UserModel } from "../../models/user/user.model";
-const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+const insertUser = async (req: Request, res: Response, next: NextFunction) => {
     let userService = new UserService(new UserModel());
     try{
+        console.log("I am here")
         let payload = req.body
         let user = await userService.upsertUser(payload);
         return res.send({
@@ -19,5 +20,5 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 export {
-    loginUser
+    insertUser
 }

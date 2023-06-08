@@ -17,7 +17,8 @@ export type User  = {
     verified: boolean;
     profileImage?: string;
     deleted: boolean | Date,
-    created_at: Date
+    created_at: Date,
+    role:[string]
 }
 
 export type Query  = {

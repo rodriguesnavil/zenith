@@ -17,18 +17,22 @@ export default class UserService {
         return new Promise(async (resolve, reject) => {
             try {
                 // verify signed message using ethers and get address
-                const address = ethers.utils.verifyMessage(appConfig.secret, payload.signed_msg);
+                // const address = ethers.utils.verifyMessage(appConfig.secret, payload.signed_msg);
 
-                console.log(`address --> ${address}`)
-                if (!address) {
-                    return reject(new ApiError(connectionErrors.UNAUTHORIZED, 401, [{
-                        signed_msg: "is not valid"
-                    }]));
-                }
-                let user: any = await this.user.findOne({ deleted: false, walletAddress: address }, { deleted: 0 });
+                // console.log(`address --> ${address}`)
+                // if (!address) {
+                //     return reject(new ApiError(connectionErrors.UNAUTHORIZED, 401, [{
+                //         signed_msg: "is not valid"
+                //     }]));
+                // }
+                let user: any = await this.user.findOne({ deleted: false, walletAddress: payload.address }, { deleted: 0 });
                 if (isNull(user)) {
                     user = {};
-                    user.walletAddress = address;
+                    user.firstName = payload.firstName;
+                    user.lastName = payload.lastName;
+                    user.email = payload.email;
+                    user.role = payload.load;
+                    user.walletAddress = payload.address;
                     user.created_at = new Date();
                     user = await this.user.save(user);
                 }
