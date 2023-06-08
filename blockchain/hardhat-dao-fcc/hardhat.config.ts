@@ -26,11 +26,11 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       allowUnlimitedContractSize: true
     },
-    sepolia: {
-      url: SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      chainId: 11155111,
-    },
+    // sepolia: {
+    //   url: SEPOLIA_RPC_URL,
+    //   accounts: [PRIVATE_KEY],
+    //   chainId: 11155111,
+    // },
   },
   solidity: "0.8.9",
   etherscan: {
