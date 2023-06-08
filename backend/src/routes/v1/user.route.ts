@@ -10,6 +10,7 @@ const UserDTO = Joi.object({
     signed_msg:  Joi.string().required(),
 })
 
-router.post('/user', validateRequest(UserDTO), loginUser);
+//router.post('/user', validateRequest(UserDTO), loginUser);
+router.post('/user', loginUser);
 
 export = router;
