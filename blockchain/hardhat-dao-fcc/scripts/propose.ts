@@ -12,12 +12,12 @@ import { moveBlocks } from "../utils/move-blocks"
 
 export async function propose(args: any[], functionToCall: string, proposalDescription: string) {
   const governor = await ethers.getContract("GovernorContract")
-  const box = await ethers.getContract("Box")
-  const encodedFunctionCall = box.interface.encodeFunctionData(functionToCall, args)
-  console.log(`Proposing ${functionToCall} on ${box.address} with ${args}`)
+  const zenith = await ethers.getContract("Zenith")
+  const encodedFunctionCall = zenith.interface.encodeFunctionData(functionToCall, args)
+  console.log(`Proposing ${functionToCall} on ${zenith.address} with ${args}`)
   console.log(`Proposal Description:\n  ${proposalDescription}`)
   const proposeTx = await governor.propose(
-    [box.address],
+    [zenith.address],
     [0],
     [encodedFunctionCall],
     proposalDescription

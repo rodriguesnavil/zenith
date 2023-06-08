@@ -12,14 +12,14 @@ import { moveTime } from "../utils/move-time"
 export async function queueAndExecute() {
   const args = [NEW_STORE_VALUE]
   const functionToCall = FUNC
-  const box = await ethers.getContract("Box")
-  const encodedFunctionCall = box.interface.encodeFunctionData(functionToCall, args)
+  const zenith = await ethers.getContract("Zenith")
+  const encodedFunctionCall = zenith.interface.encodeFunctionData(functionToCall, args)
   const descriptionHash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(PROPOSAL_DESCRIPTION))
   // could also use ethers.utils.id(PROPOSAL_DESCRIPTION)
 
   const governor = await ethers.getContract("GovernorContract")
   console.log("Queueing...")
-  const queueTx = await governor.queue([box.address], [0], [encodedFunctionCall], descriptionHash)
+  const queueTx = await governor.queue([zenith.address], [0], [encodedFunctionCall], descriptionHash)
   await queueTx.wait(1)
 
   if (developmentChains.includes(network.name)) {
@@ -30,14 +30,14 @@ export async function queueAndExecute() {
   console.log("Executing...")
   // this will fail on a testnet because you need to wait for the MIN_DELAY!
   const executeTx = await governor.execute(
-    [box.address],
+    [zenith.address],
     [0],
     [encodedFunctionCall],
     descriptionHash
   )
   await executeTx.wait(1)
-  const boxNewValue = await box.retrieve()
-  console.log(boxNewValue.toString())
+  const zenithNewValue = await zenith.getReviewerReputation(NEW_STORE_VALUE)
+  console.log(`reviwer reputation = ${zenithNewValue}`)
 }
 
 queueAndExecute()
