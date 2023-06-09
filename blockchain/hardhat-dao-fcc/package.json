@@ -1,5 +1,5 @@
 {
-  "name": "hardhat-dao-fcc",
+  "name": "Zenith-Blockchain",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@0.3.0-beta.12",
     "@nomiclabs/hardhat-etherscan": "^3.0.0",
