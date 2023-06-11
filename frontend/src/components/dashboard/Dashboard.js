@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { UserContext } from '../contexts/UserContext';
+import { UserContext } from '../../contexts/UserContext';
 import AuthorDashboard from './author/AuthorDashboard';
 import ReviewerDashboard from './reviewer/ReviewerDashboard';
 import EditorDashboard from './editor/EditorDashboard';
