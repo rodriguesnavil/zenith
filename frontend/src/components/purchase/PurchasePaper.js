@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Paper, Typography, List, ListItem, ListItemText, Button, Box } from '@material-ui/core';
+import { Paper, Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
 
 // Mock data for papers
 const mockPapers = [

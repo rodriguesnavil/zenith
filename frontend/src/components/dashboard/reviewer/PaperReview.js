@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Paper, Typography, TextField, Button, Box } from '@material-ui/core';
+import { Paper, Typography, TextField, Button, Box } from '@mui/material';
 
 const PaperReview = () => {
   const [review, setReview] = useState('');
