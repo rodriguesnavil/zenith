@@ -8,6 +8,7 @@ import "solidity-coverage"
 import "hardhat-deploy"
 import "solidity-coverage"
 import { HardhatUserConfig } from "hardhat/config"
+import { ethers } from "hardhat";
 
 const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
 const SEPOLIA_RPC_URL =
@@ -26,13 +27,31 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       allowUnlimitedContractSize: true
     },
+    lotus: {
+      url: "http://127.0.0.1:1234/rpc/v1",
+      chainId: 31415926,
+      accounts: [PRIVATE_KEY],
+      allowUnlimitedContractSize: true,
+      gas: 1500000000
+    }
     // sepolia: {
     //   url: SEPOLIA_RPC_URL,
     //   accounts: [PRIVATE_KEY],
     //   chainId: 11155111,
     // },
   },
-  solidity: "0.8.17",
+  solidity: {
+   version: "0.8.17",
+   settings: {
+    optimizer: {
+      enabled:true,
+      runs:200,
+      details:{
+        yul:false,
+      }
+    }
+   }
+  },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },

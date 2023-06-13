@@ -10,7 +10,11 @@
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",
     "@types/node": "^17.0.13",
+    "@types/yargs": "^17.0.24",
+    "@zondax/filecoin-solidity": "^4.0.3",
     "chai": "^4.3.6",
+    "cids": "^1.1.9",
+    "commander": "^10.0.1",
     "cross-env": "^7.0.2",
     "dotenv": "^10.0.0",
     "ethereum-waffle": "^3.4.0",
@@ -27,8 +31,7 @@
     "solidity-coverage": "^0.7.18",
     "ts-node": "^10.4.0",
     "typechain": "^7.0.0",
-    "typescript": "^4.5.5",
-    "@zondax/filecoin-solidity": "^4.0.3"
+    "typescript": "^4.5.5"
   },
   "scripts": {
     "lint": "solhint 'contracts/*.sol'",
@@ -36,5 +39,8 @@
     "format": "yarn prettier --write .",
     "typechain": "yarn hardhat typechain",
     "ci:clean": "rm -rf ./artifacts ./cache .;types"
+  },
+  "dependencies": {
+    "yargs": "^17.7.2"
   }
 }

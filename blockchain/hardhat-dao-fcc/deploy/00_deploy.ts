@@ -16,7 +16,7 @@ const deployDealClient: DeployFunction = async function (hre: HardhatRuntimeEnvi
     args: [],
     log: true,
     // we need to wait if on a live network so we can verify properly
-    waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
+   // waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
   })
   log(`DealClient at ${dealClient.address}`)
 }
