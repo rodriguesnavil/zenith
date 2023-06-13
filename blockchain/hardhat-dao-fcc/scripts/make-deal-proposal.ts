@@ -69,4 +69,3 @@ makeDeal().then(() => process.exit(0)).catch((error)=> {
 
 
 
-//bafy2bzacedbcgfv7xud7xuo7xmgkz7fcxfh4hbgzavarskl43ltqo7adz2ck6

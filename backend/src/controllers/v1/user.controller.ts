@@ -17,7 +17,60 @@ const insertUser = async (req: Request, res: Response, next: NextFunction) => {
         return next(e)
     }
 }
-
+const getReviewers = async (req:Request,res:Response, next:NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try{
+        let user = await userService.getReviewers();
+        return res.send({
+            success: true,
+            data: {
+                user
+            }
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
+const proposeReviewer = async (req:Request,res:Response,next:NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try {
+        let response = await userService.proposeReviewer(req.body);
+        return res.send({
+            success: true,
+            proposalId: response
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
+const voteReviewer = async (req:Request,res:Response,next:NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try {
+        let response = await userService.voteReviewer(req.body);
+        return res.send({
+            success: true,
+            proposalState: response
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
+const executeReviewer = async (req:Request,res:Response,next:NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try {
+        let response = await userService.executeReviewer(req.body);
+        return res.send({
+            success: true,
+            newReputationValue: response
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
 export {
-    insertUser
+    insertUser, getReviewers, proposeReviewer, voteReviewer, executeReviewer
 }

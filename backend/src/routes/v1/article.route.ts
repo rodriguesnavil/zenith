@@ -11,6 +11,7 @@ const UserDTO = Joi.object({
 })
 
 
-router.post('/article', insertArticle);
+router.post('/article',  insertArticle);
+
 
 export = router;

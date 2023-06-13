@@ -23,6 +23,7 @@ export default class ArticleService {
                     article.status = payload.status;
                     article.created_at = new Date();
                     article.authors = payload.authors;
+                    article.file = payload.file;
                     article = await this.article.save(article);
                     
                 }
