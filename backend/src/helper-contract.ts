@@ -4,10 +4,12 @@ import * as GovernorContract from "../src/ABIs/GovernorContract.json";
 
 export const PROVIDER_URL_HARDHAT = "http://localhost:8545";
 export const PROVIDER_URL_LOTUS= "http://127.0.0.1:1234/rpc/v1"
-export const ZENITH_ADDRESS = "0xF78A38daA9B53e04f3Da0A5Fc978Df7D46890fAE";
-export const GOVERNOR_ADDRESS = "0x252EA8a33BD374Dd2CC980737013a224836f71F9";
+export const ZENITH_ADDRESS = "0x147c97e090a09914f3F8281F4996486F2209736D";
+export const GOVERNOR_ADDRESS = "0xe0C407793a2faD0898C0efd3a2098A51ee458811";
 
-export const FUNCTION_TO_CALL = "addReviewer";
+export const FUNCTION_TO_CALL_Reviewer = "addReviewer";
+export const FUNCTION_TO_CALL_Article = "addArticle";
+
 //const privateKey = process.env.PRIVATE_KEY_HARDHAT;
 const privateKey = process.env.PRIVATE_KEY_LOTUS;
 

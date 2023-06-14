@@ -1,7 +1,7 @@
 import * as express from 'express';
 import validateRequest = require("../../middlewares/validateSchema");
 import * as Joi from "joi";
-import {insertUser,getReviewers,proposeReviewer,voteReviewer, executeReviewer} from './../../controllers/v1/user.controller'
+import {insertUser,getReviewers,proposeReviewer,voteReviewer, queueReviewer, executeReviewer} from './../../controllers/v1/user.controller'
 import {globals} from './../../constants'
 
 const router = express.Router();
@@ -15,6 +15,8 @@ router.post('/user', insertUser);
 router.get('/reviewers',getReviewers);
 router.post('/reviewers/propose',proposeReviewer)
 router.post('/reviewers/vote',voteReviewer)
+router.post('/reviewers/queue',queueReviewer)
 router.post('/reviewers/execute',executeReviewer)
+
 
 export = router;

@@ -58,6 +58,19 @@ const voteReviewer = async (req:Request,res:Response,next:NextFunction) => {
         return next(e)
     }
 }
+const queueReviewer = async (req:Request,res:Response,next:NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try {
+        let response = await userService.queueReviewer(req.body);
+        return res.send({
+            success: true,
+            newReputationValue: response
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
 const executeReviewer = async (req:Request,res:Response,next:NextFunction) => {
     let userService = new UserService(new UserModel());
     try {
@@ -72,5 +85,5 @@ const executeReviewer = async (req:Request,res:Response,next:NextFunction) => {
     }
 }
 export {
-    insertUser, getReviewers, proposeReviewer, voteReviewer, executeReviewer
+    insertUser, getReviewers, proposeReviewer, voteReviewer, executeReviewer, queueReviewer
 }

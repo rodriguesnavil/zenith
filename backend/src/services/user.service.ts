@@ -8,7 +8,7 @@ import * as jwt from "jsonwebtoken";
 import {
   getZenithAddressAndABI,
   getGovernorContractAndABI,
-  FUNCTION_TO_CALL,
+  FUNCTION_TO_CALL_Reviewer,
 } from "../helper-contract";
 
 export default class UserService {
@@ -64,17 +64,17 @@ export default class UserService {
   proposeReviewer(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`---------->${payload.reviewer} and ${FUNCTION_TO_CALL}`);
+        console.log(`---------->${payload.reviewer} and ${FUNCTION_TO_CALL_Reviewer}`);
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
-          FUNCTION_TO_CALL,
+          FUNCTION_TO_CALL_Reviewer,
           [payload.reviewer]
         );
         const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
 
         console.log(
-          `Proposing ${FUNCTION_TO_CALL} on ${zenithContract.address} with ${payload.reviewer}`
+          `Proposing ${FUNCTION_TO_CALL_Reviewer} on ${zenithContract.address} with ${payload.reviewer}`
         );
         console.log(`Proposal Description:\n  ${PROPOSAL_DESCRIPTION}`);
         const proposeTx = await governorContract.propose(
@@ -98,27 +98,26 @@ export default class UserService {
         console.log(`moving blocks`);
         console.log("Voting.....");
         const governorContract = await getGovernorContractAndABI();
+        let proposalState = await governorContract.state(payload.proposalId);
+        console.log(`Proposal state before vote is ${proposalState}`);
         const voteTx = await governorContract.castVoteWithReason(
           payload.proposalId,
           payload.voteWay,
           payload.reason
         );
-        // console.log(`-------->`)
-        // const voteTxReceipt = await voteTx.wait(1)
-        // console.log(`<--------`)
-        const proposalState = await governorContract.state(payload.proposalId);
-        console.log(`Proposal state is ${proposalState}`);
+        proposalState = await governorContract.state(payload.proposalId);
+        console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
       } catch (e) {
         return reject(e);
       }
     });
   }
-  executeReviewer(payload: any) {
+  queueReviewer(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
         const args = [payload.reviewer];
-        const functionToCall = FUNCTION_TO_CALL;
+        const functionToCall = FUNCTION_TO_CALL_Reviewer;
         const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
@@ -136,6 +135,29 @@ export default class UserService {
           [encodedFunctionCall],
           descriptionHash
         );
+        return resolve("success");
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+
+  executeReviewer(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const args = [payload.reviewer];
+        const functionToCall = FUNCTION_TO_CALL_Reviewer;
+        const zenithContract = await getZenithAddressAndABI();
+        const governorContract = await getGovernorContractAndABI();
+        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
+
+        const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
+          functionToCall,
+          args
+        );
+        const descriptionHash = ethers.utils.keccak256(
+          ethers.utils.toUtf8Bytes(PROPOSAL_DESCRIPTION)
+        );
         console.log("Executing...");
         const executeTx = await governorContract.execute(
           [zenithContract.address],
@@ -147,9 +169,9 @@ export default class UserService {
           payload.reviewer
         );
         console.log(`reviwer reputation = ${zenithNewValue}`);
-        return resolve(zenithNewValue)
+        return resolve(zenithNewValue);
       } catch (e) {
-        return reject(e)
+        return reject(e);
       }
     });
   }

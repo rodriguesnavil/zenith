@@ -29,4 +29,4 @@ export const ADDRESS_ZERO = "0x0000000000000000000000000000000000000000"
 
 export const NEW_STORE_VALUE = "0x6aC1BD25251409Afc3009ba3c53F10c2C4a1671b"
 export const FUNC = "addReviewer"
-export const PROPOSAL_DESCRIPTION = "Proposal #1 Add 0x6aC1BD25251409Afc3009ba3c53F10c2C4a1671b to reviewer set!"
+export const PROPOSAL_DESCRIPTION = "Proposal #2 Add 0x6aC1BD25251409Afc3009ba3c53F10c2C4a1671b to reviewer set!"

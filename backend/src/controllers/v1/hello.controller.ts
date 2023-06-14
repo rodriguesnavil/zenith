@@ -1,12 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { ethers } from 'ethers';
-import {getZenithAddressAndABI} from "../../helper-contract"
 
 const helloWorld = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const zenithContract = await getZenithAddressAndABI();
-      const data = await zenithContract.initialRep()
-      console.log(data.toNumber())
         return res.send({
             success: true,
             data: "Hello Hell!"
