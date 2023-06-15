@@ -47,7 +47,7 @@ export default class ArticleService {
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
             FUNCTION_TO_CALL_Article,
-          [payload.articleId]
+            [payload.articleId]
         );
         const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
         console.log(
@@ -59,8 +59,12 @@ export default class ArticleService {
           [encodedFunctionCall],
           PROPOSAL_DESCRIPTION
         );
-        const proposeReceipt = await proposeTx.wait(1);
-        const proposalId: any = proposeReceipt.events[0].args.proposalId;
+        
+        const proposeTxReceipt = await proposeTx.wait(1);
+        for (let i=0;i<proposeTxReceipt.events.length;i++) {
+            console.log(proposeTxReceipt.events[i].args)
+        }
+        const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
         return resolve(proposalId);
       } catch (e) {
@@ -81,7 +85,9 @@ export default class ArticleService {
           payload.reason
         );
         const voteTxReceipt = await voteTx.wait(1)
-        console.log(`resaon is ${voteTxReceipt.events[0].args.reason}`)
+        for (let i=0;i<voteTxReceipt.events.length;i++) {
+            console.log(voteTxReceipt.events[i].args)
+        }
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -112,6 +118,10 @@ export default class ArticleService {
           [encodedFunctionCall],
           descriptionHash
         );
+        const queueTxReceipt = await queueTx.wait(1)
+        for (let i=0;i<queueTxReceipt.events.length;i++) {
+            console.log(queueTxReceipt.events[i].args)
+        }
         return resolve("success");
       } catch (e) {
         return reject(e);
@@ -142,10 +152,14 @@ export default class ArticleService {
           [encodedFunctionCall],
           descriptionHash
         );
+        const executeTxReceipt = await executeTx.wait(1)
+        for (let i=0;i<executeTxReceipt.events.length;i++) {
+            console.log(executeTxReceipt.events[i].args)
+        }
         const isArticlePublished = await zenithContract.isArticlePublished(
           payload.articleId
         );
-        console.log(`Article status = ${isArticlePublished}`);
+        console.log(`Article ID = ${payload.articleId} and Article status = ${isArticlePublished}`);
         return resolve(isArticlePublished);
       } catch (e) {
         return reject(e);

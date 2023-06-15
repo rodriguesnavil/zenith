@@ -7,8 +7,8 @@ import  CID  from "cids";
     const pieceSize = 256
     const verifiedDeal= false
     const label = "bafybeieeonqa3syayibimheecdcy34o3fcxptso423msk3rpwyaqtxvkzy"
-    const startEpoch = 5000
-    const endEpoch = 531600
+    const startEpoch = 10000
+    const endEpoch = 1000000
     const storagePricePerEpoch = 0
     const providerCollateral = 0
     const clientCollateral = 0
