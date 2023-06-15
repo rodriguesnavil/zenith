@@ -64,29 +64,31 @@ export default class UserService {
   proposeReviewer(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`---------->${payload.reviewer} and ${FUNCTION_TO_CALL_Reviewer}`);
+        console.log(`proposing ${payload.reviewer} and ${FUNCTION_TO_CALL_Reviewer}`);
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
-          FUNCTION_TO_CALL_Reviewer,
+            FUNCTION_TO_CALL_Reviewer,
           [payload.reviewer]
         );
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
-
+        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
         console.log(
           `Proposing ${FUNCTION_TO_CALL_Reviewer} on ${zenithContract.address} with ${payload.reviewer}`
         );
-        console.log(`Proposal Description:\n  ${PROPOSAL_DESCRIPTION}`);
         const proposeTx = await governorContract.propose(
           [zenithContract.address],
           [0],
           [encodedFunctionCall],
           PROPOSAL_DESCRIPTION
         );
-        const proposeReceipt = await proposeTx.wait(1);
-        const proposalId: any = proposeReceipt.events[0].args.proposalId;
+        
+        const proposeTxReceipt = await proposeTx.wait(1);
+        for (let i=0;i<proposeTxReceipt.events.length;i++) {
+            console.log(proposeTxReceipt.events[i])
+        }
+        const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
-        return resolve(proposalId);
+        return resolve(proposalId.toString());
       } catch (e) {
         return reject(e);
       }
@@ -95,7 +97,6 @@ export default class UserService {
   voteReviewer(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`moving blocks`);
         console.log("Voting.....");
         const governorContract = await getGovernorContractAndABI();
         let proposalState = await governorContract.state(payload.proposalId);
@@ -105,6 +106,10 @@ export default class UserService {
           payload.voteWay,
           payload.reason
         );
+        const voteTxReceipt = await voteTx.wait(1)
+        for (let i=0;i<voteTxReceipt.events.length;i++) {
+            console.log(voteTxReceipt.events[i])
+        }
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -118,7 +123,7 @@ export default class UserService {
       try {
         const args = [payload.reviewer];
         const functionToCall = FUNCTION_TO_CALL_Reviewer;
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
+        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -135,6 +140,10 @@ export default class UserService {
           [encodedFunctionCall],
           descriptionHash
         );
+        const queueTxReceipt = await queueTx.wait(1)
+        for (let i=0;i<queueTxReceipt.events.length;i++) {
+            console.log(queueTxReceipt.events[i])
+        }
         return resolve("success");
       } catch (e) {
         return reject(e);
@@ -149,7 +158,7 @@ export default class UserService {
         const functionToCall = FUNCTION_TO_CALL_Reviewer;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
+        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
 
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -165,11 +174,15 @@ export default class UserService {
           [encodedFunctionCall],
           descriptionHash
         );
-        const zenithNewValue = await zenithContract.getReviewerReputation(
+        const executeTxReceipt = await executeTx.wait(1)
+        for (let i=0;i<executeTxReceipt.events.length;i++) {
+            console.log(executeTxReceipt.events[i])
+        }
+        const reviewerRep = await zenithContract.getReviewerReputation(
           payload.reviewer
         );
-        console.log(`reviwer reputation = ${zenithNewValue}`);
-        return resolve(zenithNewValue);
+        console.log(`Reviewer = ${payload.reviewer} and Reputation is = ${reviewerRep}`);
+        return resolve(reviewerRep);
       } catch (e) {
         return reject(e);
       }
