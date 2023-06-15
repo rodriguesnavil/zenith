@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Paper, Typography, TextField, Button, Box } from '@mui/material';
+import { Paper, Typography, TextField, Button, Box, Grid } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const PaperSubmission = () => {
   const [title, setTitle] = useState('');
-  const [abstract, setAbstract] = useState('');
   const [file, setFile] = useState(null);
+
+  const navigate = useNavigate(); // create a navigate instance
 
   const handleFileUpload = (event) => {
     setFile(event.target.files[0]);
@@ -12,7 +14,9 @@ const PaperSubmission = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // call to the backend or blockchain will go here
+    // Upload the file to lighthouse
+    // Mint a new NFT with the IPFS hash of the file
+    // Add the paper to the blockchain
   };
 
   return (
@@ -32,21 +36,24 @@ const PaperSubmission = () => {
               />
             </Box>
             <Box mb={2}>
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Abstract"
-                value={abstract}
-                onChange={(e) => setAbstract(e.target.value)}
-              />
-            </Box>
-            <Box mb={2}>
               <input type="file" onChange={handleFileUpload} />
             </Box>
-            <Button variant="contained" color="primary" type="submit">
-              Submit
-            </Button>
+            <Grid container spacing={2}>
+              <Grid item>
+                <Button variant="contained" color="primary" type="submit">
+                  Submit
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button 
+                  variant="outlined" 
+                  color="secondary" 
+                  onClick={() => navigate('/dashboard')} 
+                >
+                  Back to Dashboard
+                </Button>
+              </Grid>
+            </Grid>
           </form>
         </Box>
       </Paper>

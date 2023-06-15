@@ -7,6 +7,7 @@ import RoleSelect from './components/auth/RoleSelect';
 import Dashboard from './components/dashboard/Dashboard';
 import PurchasePaper from './components/purchase/PurchasePaper';
 import Reader from './components/purchase/Reader';
+import PaperSubmission from './components/dashboard/author/PaperSubmission';
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/role-select" element={<RoleSelect />} />
+          <Route path="/submit-paper" element={<PaperSubmission />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/purchase" element={<PurchasePaper />} />
           <Route path="/read/:paperId" element={<Reader />} />
