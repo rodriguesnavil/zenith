@@ -4,12 +4,14 @@ import { connectionErrors } from "../constants";
 import { isEmpty, isNull } from "lodash";
 import { appConfig } from "../config";
 import { ethers } from "ethers";
+
 import * as jwt from "jsonwebtoken";
 import {
     getZenithAddressAndABI,
     getGovernorContractAndABI,
     FUNCTION_TO_CALL_Article,
   } from "../helper-contract";
+import { articleStatus } from "../models/article/schema";
   
 
 export default class ArticleService {
@@ -18,17 +20,17 @@ export default class ArticleService {
         this.article = article;
     }
 
-    upsertArticle(payload: any) {
+    upsertArticle(payload: any, file: any) {
         return new Promise(async (resolve, reject) => {
             try {
                 let article: any = await this.article.findOne( {title:payload.title, status: payload.status}, );
                 if (isNull(article)) {
                     article = {};
                     article.title = payload.title;
-                    article.status = payload.status;
+                    article.status = articleStatus.SUBMITTED;
                     article.created_at = new Date();
                     article.authors = payload.authors;
-                    article.file = payload.file;
+                    article.file = file;
                     article = await this.article.save(article);
                     
                 }
