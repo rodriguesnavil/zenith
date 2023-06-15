@@ -1,6 +1,6 @@
 import React from 'react';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { Box } from '@mui/system';
 import theme from '../../styles/materialUI/Theme';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -9,9 +9,11 @@ const Layout = ({ children }) => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Navbar />
-      {children}
-      <Footer />
+      <Box display="flex" flexDirection="column" minHeight="100vh">
+        <Navbar />
+        <Box flexGrow={1}>{children}</Box>
+        <Footer />
+      </Box>
     </ThemeProvider>
   );
 };
