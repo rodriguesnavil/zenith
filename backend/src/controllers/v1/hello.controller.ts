@@ -4,7 +4,7 @@ const helloWorld = async (req: Request, res: Response, next: NextFunction) => {
     try {
         return res.send({
             success: true,
-            data: "Hello World!"
+            data: "Hello Hell!"
         })
     } catch (e) {
         console.log(e);

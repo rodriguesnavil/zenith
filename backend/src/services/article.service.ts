@@ -1,4 +1,4 @@
-import { UserModel, User } from "../models/user/user.model";
+import { ArticleModel, Article } from "../models/article/article.model";
 import { ApiError } from "../commons/APIError";
 import { connectionErrors } from "../constants";
 import { isEmpty, isNull } from "lodash";
@@ -6,77 +6,53 @@ import { appConfig } from "../config";
 import { ethers } from "ethers";
 import * as jwt from "jsonwebtoken";
 import {
-  getZenithAddressAndABI,
-  getGovernorContractAndABI,
-  FUNCTION_TO_CALL_Reviewer,
-} from "../helper-contract";
+    getZenithAddressAndABI,
+    getGovernorContractAndABI,
+    FUNCTION_TO_CALL_Article,
+  } from "../helper-contract";
+  
 
-export default class UserService {
-  user: UserModel;
-  constructor(user: UserModel) {
-    this.user = user;
-  }
+export default class ArticleService {
+    article: ArticleModel
+    constructor(article: ArticleModel) {
+        this.article = article;
+    }
 
-  upsertUser(payload: any) {
+    upsertArticle(payload: any) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let article: any = await this.article.findOne( {title:payload.title, status: payload.status}, );
+                if (isNull(article)) {
+                    article = {};
+                    article.title = payload.title;
+                    article.status = payload.status;
+                    article.created_at = new Date();
+                    article.authors = payload.authors;
+                    article.file = payload.file;
+                    article = await this.article.save(article);
+                    
+                }
+                return resolve(article);
+            } catch (e) {
+                return reject(e)
+            }
+        })
+    }
+
+  proposeArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        // verify signed message using ethers and get address
-        // const address = ethers.utils.verifyMessage(appConfig.secret, payload.signed_msg);
-
-        // console.log(`address --> ${address}`)
-        // if (!address) {
-        //     return reject(new ApiError(connectionErrors.UNAUTHORIZED, 401, [{
-        //         signed_msg: "is not valid"
-        //     }]));
-        // }
-        let user: any = await this.user.findOne(
-          { deleted: false, walletAddress: payload.walletAddress },
-          { deleted: 0 }
-        );
-        if (isNull(user)) {
-          user = {};
-          user.firstName = payload.firstName;
-          user.lastName = payload.lastName;
-          user.email = payload.email;
-          user.role = payload.role;
-          user.walletAddress = payload.walletAddress;
-          user.created_at = new Date();
-          user = await this.user.save(user);
-        }
-        return resolve(user);
-      } catch (e) {
-        return reject(e);
-      }
-    });
-  }
-  getReviewers() {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const query = { role: "reviewer" };
-        let reviewers: any = await this.user.find(query);
-        return resolve(reviewers);
-      } catch (e) {
-        return reject(e);
-      }
-    });
-  }
-
-  proposeReviewer(payload: any) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        console.log(`---------->${payload.reviewer} and ${FUNCTION_TO_CALL_Reviewer}`);
+        console.log(`proposing ${payload.articleId} and ${FUNCTION_TO_CALL_Article}`);
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
-          FUNCTION_TO_CALL_Reviewer,
-          [payload.reviewer]
+            FUNCTION_TO_CALL_Article,
+          [payload.articleId]
         );
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
-
+        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
         console.log(
-          `Proposing ${FUNCTION_TO_CALL_Reviewer} on ${zenithContract.address} with ${payload.reviewer}`
+          `Proposing ${FUNCTION_TO_CALL_Article} on ${zenithContract.address} with ${payload.articleId}`
         );
-        console.log(`Proposal Description:\n  ${PROPOSAL_DESCRIPTION}`);
         const proposeTx = await governorContract.propose(
           [zenithContract.address],
           [0],
@@ -92,10 +68,9 @@ export default class UserService {
       }
     });
   }
-  voteReviewer(payload: any) {
+  voteArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`moving blocks`);
         console.log("Voting.....");
         const governorContract = await getGovernorContractAndABI();
         let proposalState = await governorContract.state(payload.proposalId);
@@ -105,6 +80,8 @@ export default class UserService {
           payload.voteWay,
           payload.reason
         );
+        const voteTxReceipt = await voteTx.wait(1)
+        console.log(`resaon is ${voteTxReceipt.events[0].args.reason}`)
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -113,12 +90,12 @@ export default class UserService {
       }
     });
   }
-  queueReviewer(payload: any) {
+  queueArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.reviewer];
-        const functionToCall = FUNCTION_TO_CALL_Reviewer;
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
+        const args = [payload.articleId];
+        const functionToCall = FUNCTION_TO_CALL_Article;
+        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -142,14 +119,14 @@ export default class UserService {
     });
   }
 
-  executeReviewer(payload: any) {
+  executeArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.reviewer];
-        const functionToCall = FUNCTION_TO_CALL_Reviewer;
+        const args = [payload.articleId];
+        const functionToCall = FUNCTION_TO_CALL_Article;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
-        const PROPOSAL_DESCRIPTION = `Add a reviewer ${payload.reviewer} to reviewer set!`;
+        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
 
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -165,11 +142,11 @@ export default class UserService {
           [encodedFunctionCall],
           descriptionHash
         );
-        const zenithNewValue = await zenithContract.getReviewerReputation(
-          payload.reviewer
+        const isArticlePublished = await zenithContract.isArticlePublished(
+          payload.articleId
         );
-        console.log(`reviwer reputation = ${zenithNewValue}`);
-        return resolve(zenithNewValue);
+        console.log(`Article status = ${isArticlePublished}`);
+        return resolve(isArticlePublished);
       } catch (e) {
         return reject(e);
       }
