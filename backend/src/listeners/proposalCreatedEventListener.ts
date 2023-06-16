@@ -36,7 +36,6 @@ export class EventListener {
         voteEnd: args[7],
         proposalDescription: args[8],
       };
-      console.log(`etherSent=${payload.etherSent}`)
       let proposalService = new ProposalService(new ProposalModel());
       proposalService.insertProposal(payload);
     });

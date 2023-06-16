@@ -71,7 +71,7 @@ export default class UserService {
             FUNCTION_TO_CALL_Reviewer,
           [payload.reviewer]
         );
-        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
+        const PROPOSAL_DESCRIPTION = payload.description;
         console.log(
           `Proposing ${FUNCTION_TO_CALL_Reviewer} on ${zenithContract.address} with ${payload.reviewer}`
         );
@@ -83,9 +83,6 @@ export default class UserService {
         );
         
         const proposeTxReceipt = await proposeTx.wait(1);
-        for (let i=0;i<proposeTxReceipt.events.length;i++) {
-            console.log(proposeTxReceipt.events[i])
-        }
         const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
         return resolve(proposalId.toString());
@@ -107,9 +104,6 @@ export default class UserService {
           payload.reason
         );
         const voteTxReceipt = await voteTx.wait(1)
-        for (let i=0;i<voteTxReceipt.events.length;i++) {
-            console.log(voteTxReceipt.events[i])
-        }
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -123,7 +117,7 @@ export default class UserService {
       try {
         const args = [payload.reviewer];
         const functionToCall = FUNCTION_TO_CALL_Reviewer;
-        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
+        const PROPOSAL_DESCRIPTION = payload.description;
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -141,9 +135,6 @@ export default class UserService {
           descriptionHash
         );
         const queueTxReceipt = await queueTx.wait(1)
-        for (let i=0;i<queueTxReceipt.events.length;i++) {
-            console.log(queueTxReceipt.events[i])
-        }
         return resolve("success");
       } catch (e) {
         return reject(e);
@@ -158,7 +149,7 @@ export default class UserService {
         const functionToCall = FUNCTION_TO_CALL_Reviewer;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
-        const PROPOSAL_DESCRIPTION = `Add a Reviewer ${payload.reviewer} to Reviewer set!`;
+        const PROPOSAL_DESCRIPTION = payload.description;
 
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -175,9 +166,6 @@ export default class UserService {
           descriptionHash
         );
         const executeTxReceipt = await executeTx.wait(1)
-        for (let i=0;i<executeTxReceipt.events.length;i++) {
-            console.log(executeTxReceipt.events[i])
-        }
         const reviewerRep = await zenithContract.getReviewerReputation(
           payload.reviewer
         );

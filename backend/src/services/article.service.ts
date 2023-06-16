@@ -20,7 +20,7 @@ export default class ArticleService {
         this.article = article;
     }
 
-    upsertArticle(payload: any, file: any) {
+    upsertArticle(payload: any) {
         return new Promise(async (resolve, reject) => {
             try {
                 let article: any = await this.article.findOne( {title:payload.title, status: payload.status}, );
@@ -30,7 +30,7 @@ export default class ArticleService {
                     article.status = articleStatus.SUBMITTED;
                     article.created_at = new Date();
                     article.authors = payload.authors;
-                    article.file = file;
+                    //article.file = file;
                     article = await this.article.save(article);
                     
                 }
@@ -51,7 +51,7 @@ export default class ArticleService {
             FUNCTION_TO_CALL_Article,
             [payload.articleId]
         );
-        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
+        const PROPOSAL_DESCRIPTION = payload.description;
         console.log(
           `Proposing ${FUNCTION_TO_CALL_Article} on ${zenithContract.address} with ${payload.articleId}`
         );
@@ -63,12 +63,9 @@ export default class ArticleService {
         );
         
         const proposeTxReceipt = await proposeTx.wait(1);
-        for (let i=0;i<proposeTxReceipt.events.length;i++) {
-            console.log(proposeTxReceipt.events[i].args)
-        }
         const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
-        return resolve(proposalId);
+        return resolve(proposalId.toString());
       } catch (e) {
         return reject(e);
       }
@@ -87,9 +84,6 @@ export default class ArticleService {
           payload.reason
         );
         const voteTxReceipt = await voteTx.wait(1)
-        for (let i=0;i<voteTxReceipt.events.length;i++) {
-            console.log(voteTxReceipt.events[i].args)
-        }
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -103,7 +97,7 @@ export default class ArticleService {
       try {
         const args = [payload.articleId];
         const functionToCall = FUNCTION_TO_CALL_Article;
-        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
+        const PROPOSAL_DESCRIPTION = payload.description
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -121,9 +115,6 @@ export default class ArticleService {
           descriptionHash
         );
         const queueTxReceipt = await queueTx.wait(1)
-        for (let i=0;i<queueTxReceipt.events.length;i++) {
-            console.log(queueTxReceipt.events[i].args)
-        }
         return resolve("success");
       } catch (e) {
         return reject(e);
@@ -138,7 +129,7 @@ export default class ArticleService {
         const functionToCall = FUNCTION_TO_CALL_Article;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
-        const PROPOSAL_DESCRIPTION = `Add a article ${payload.articleId} to article set!`;
+        const PROPOSAL_DESCRIPTION = payload.description;
 
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -155,9 +146,6 @@ export default class ArticleService {
           descriptionHash
         );
         const executeTxReceipt = await executeTx.wait(1)
-        for (let i=0;i<executeTxReceipt.events.length;i++) {
-            console.log(executeTxReceipt.events[i].args)
-        }
         const isArticlePublished = await zenithContract.isArticlePublished(
           payload.articleId
         );
