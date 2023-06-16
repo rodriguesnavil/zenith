@@ -2,19 +2,19 @@ import { ethers } from "hardhat";
 import  CID  from "cids";
 
 
-    const contract = "0xB00DF6806999d41c2135d571fbc6C11019D882c5"
-    const pieceCid = "baga6ea4seaqjufkzz5ys2kyg34sfkifff3di5nqqv4s3sfjdfhwxmszjerxhqpi"
+    const contract = "0xAd7D24be745C9725c16BCAaC1324e3579AbF392c"
+    const pieceCid = "baga6ea4seaqec6updz2yw7y4bmcv5vufqtn47cqdekdqg6ckl32plpy4tlskeii"
     const pieceSize = 256
     const verifiedDeal= false
-    const label = "bafybeieeonqa3syayibimheecdcy34o3fcxptso423msk3rpwyaqtxvkzy"
-    const startEpoch = 10000
+    const label = "bafybeianzsb2luqeot7bkycbc67sqw3m7k4wm5ulsytuuyslph34e26cca"
+    const startEpoch = 20000
     const endEpoch = 1000000
     const storagePricePerEpoch = 0
     const providerCollateral = 0
     const clientCollateral = 0
     const extraParamsVersion= 1
-    const locationRef = "https://data-depot.lighthouse.storage/api/download/download_car?fileId=a94a1a4f-3a6b-4855-8eb0-8c08b4e35d4c.car"
-    const carSize = 254
+    const locationRef = "https://data-depot.lighthouse.storage/api/download/download_car?fileId=5ab075be-3a13-4c77-b6db-29440812df3e.car"
+    const carSize = 220
     
 
 
