@@ -8,6 +8,8 @@ import Dashboard from './components/dashboard/Dashboard';
 import PurchasePaper from './components/purchase/PurchasePaper';
 import Reader from './components/purchase/Reader';
 import PaperSubmission from './components/dashboard/author/PaperSubmission';
+import ProposeReviewer from './components/dashboard/reviewer/ProposeReviewer'
+import VoteReviewer from './components/dashboard/reviewer/VoteReviewer'
 
 const AppRoutes = () => {
   return (
@@ -20,6 +22,8 @@ const AppRoutes = () => {
           <Route path="/submit-paper" element={<PaperSubmission />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/purchase" element={<PurchasePaper />} />
+          <Route path="/propose-reviewer" element={<ProposeReviewer />} />
+          <Route path="/vote-reviewer" element={<VoteReviewer />} />
           <Route path="/read/:paperId" element={<Reader />} />
         </Routes>
       </Layout>
