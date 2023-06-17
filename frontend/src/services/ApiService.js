@@ -39,13 +39,32 @@ export const submitPaper = async (paperFormData) => {
   }
 };
 
-export const getPapers = async () => {
-    try {
-        const response = await apiClient.get('/papers');
-        return response.data;
-      } catch (error) {
-        console.error(`Failed to fetch papers: ${error}`);
-        throw error;
-      }
-};
+export const getAllArticles = async () => {
+  try {
+    const response = await apiClient.get('/v1/getAllArticles');
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch articles: ${error}`);
+    throw error;
+  }
+}
 
+export const getReviewers = async () => {
+  try {
+    const response = await apiClient.get('/v1/reviewers');
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch reviewers: ${error}`);
+    throw error;
+  }
+}
+
+export const assignReviewer = async (articleId, reviewerId) => {
+  try {
+    const response = await apiClient.post(`/v1/assignReviewer/${articleId}/${reviewerId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to assign reviewer: ${error}`);
+    throw error;
+  }
+}

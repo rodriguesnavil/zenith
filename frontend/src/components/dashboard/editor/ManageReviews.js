@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
-import { Paper, Typography, List, ListItem, ListItemText, Button, Box } from '@mui/material';
-
-// Mock data for reviews
-const mockReviews = [
-  { id: 1, paper: 'Paper 1', reviewer: 'Reviewer A', status: 'Pending' },
-  { id: 2, paper: 'Paper 2', reviewer: 'Reviewer B', status: 'Approved' },
-];
+import React, { useEffect, useState } from 'react';
+import { Paper, Typography, List, ListItem, ListItemText, Button, Box, Select, MenuItem } from '@mui/material';
+import { getAllArticles, getReviewers, assignReviewer } from '../../../services/ApiService';
 
 const ManageReviews = () => {
-  const [reviews, setReviews] = useState(mockReviews);
+  const [articles, setArticles] = useState([]);
+  const [reviewers, setReviewers] = useState([]);
 
-  const handleApprove = (id) => {
-    // call to the backend or blockchain will go here
-    console.log(`Review ${id} approved.`);
-  };
+  useEffect(() => {
+    const fetchArticlesAndReviewers = async () => {
+      const [articlesResponse, reviewersResponse] = await Promise.all([getAllArticles(), getReviewers()]);
+      setArticles(articlesResponse.data.response);
+      setReviewers(reviewersResponse.data.user);
+      console.log(`reviewersResponse: ${JSON.stringify(reviewersResponse)}`);
+    };
 
-  const handleReject = (id) => {
-    // call to the backend or blockchain will go here
-    console.log(`Review ${id} rejected.`);
+    fetchArticlesAndReviewers();
+  }, []);
+
+  const handleAssignReviewer = async (articleId, reviewerId) => {
+    const updatedArticle = await assignReviewer(articleId, reviewerId);
+    setArticles(articles.map(a => a._id === updatedArticle._id ? updatedArticle : a));
   };
 
   return (
@@ -27,17 +29,29 @@ const ManageReviews = () => {
       </Typography>
       <Paper>
         <List>
-          {reviews.map((review) => (
-            <ListItem key={review.id}>
+          {articles.map((article) => (
+            <ListItem key={article._id}>
               <ListItemText
-                primary={`Paper: ${review.paper}, Reviewer: ${review.reviewer}, Status: ${review.status}`}
+                primary={`Paper: ${article.title}, Status: ${article.status}`}
               />
-              <Button variant="contained" color="primary" onClick={() => handleApprove(review.id)}>
-                Approve
-              </Button>
-              <Button variant="contained" color="secondary" onClick={() => handleReject(review.id)}>
-                Reject
-              </Button>
+              {article.status === 'SUBMITTED' && (
+                <>
+                  <Select
+                    variant="outlined"
+                    value=""
+                    onChange={(e) => handleAssignReviewer(article._id, e.target.value)}
+                  >
+                    <MenuItem value="" disabled>
+                      Select Reviewer
+                    </MenuItem>
+                    {reviewers.map((reviewer) => (
+                      <MenuItem key={reviewer._id} value={reviewer._id}>
+                        {reviewer.firstName} {reviewer.lastName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </>
+              )}
             </ListItem>
           ))}
         </List>

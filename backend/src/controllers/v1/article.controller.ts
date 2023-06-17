@@ -36,7 +36,7 @@ const getAllArtilces = async (
 ) => {
   let articleService = new ArticleService(new ArticleModel());
   try {
-    let response = await articleService.getAllArtilces();
+    let response = await articleService.getAllArticles();
     return res.send({
       success: true,
       data: {

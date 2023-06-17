@@ -53,7 +53,7 @@ export default class ArticleService {
     });
   }
 
-  getAllArtilces() {
+  getAllArticles() {
     return new Promise(async (resolve, reject) => {
       try {
         let articles: any = await this.article.find({deleted:false});
