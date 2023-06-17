@@ -46,7 +46,7 @@ export default class ArticleService {
           };
           article = await this.article.save(article);
         }
-        resolve(article);
+        return resolve(article);
       } catch (e) {
         return reject(e);
       }

@@ -4,6 +4,7 @@ import * as userRoutes from "./user.route";
 import * as articleRoutes from "./article.route";
 import * as makeDealRoutes from "./makeDeal.route"
 import * as lighthouseRoutes from "./lightHouse.route"
+import * as commentRoutes from "./comment.route"
 const router = express.Router();
 
 // user routes
@@ -20,5 +21,8 @@ router.use(makeDealRoutes)
 
 //lighthouse routes
 router.use(lighthouseRoutes)
+
+//comment routes
+router.use(commentRoutes)
 
 export = router
