@@ -14,14 +14,17 @@ export type Article = {
     created_at?:string
     deleted:boolean | Date
     status: articleStatus
-    authors: mongoose.Schema.Types.ObjectId
+    walletAddresses: string[],
+    filePath: string,
 }
 
 export type Query = {
     _id?: string
     title?:string
-    status:articleStatus
-    deleted:boolean
+    status?:articleStatus
+    deleted:boolean,
+    walletAddresses?: string[],
+    filePath?: string,
 }
 
 export class ArticleModel {

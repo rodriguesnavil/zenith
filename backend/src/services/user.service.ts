@@ -20,25 +20,16 @@ export default class UserService {
   upsertUser(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        // verify signed message using ethers and get address
-        // const address = ethers.utils.verifyMessage(appConfig.secret, payload.signed_msg);
-
-        // console.log(`address --> ${address}`)
-        // if (!address) {
-        //     return reject(new ApiError(connectionErrors.UNAUTHORIZED, 401, [{
-        //         signed_msg: "is not valid"
-        //     }]));
-        // }
         let user: any = await this.user.findOne(
           { deleted: false, walletAddress: payload.walletAddress },
           { deleted: 0 }
         );
+        console.log(`user ${JSON.stringify(user)}`);
         if (isNull(user)) {
           user = {};
           user.firstName = payload.firstName;
           user.lastName = payload.lastName;
           user.email = payload.email;
-          user.role = payload.role;
           user.walletAddress = payload.walletAddress;
           user.created_at = new Date();
           user = await this.user.save(user);
@@ -49,6 +40,24 @@ export default class UserService {
       }
     });
   }
+
+  getUser(walletAddress: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let user: any = await this.user.findOne(
+          { deleted: false, walletAddress },
+          { deleted: 0 }
+        );
+        if (isNull(user)) {
+          return resolve(null);
+        }
+        return resolve(user);
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+
   getReviewers() {
     return new Promise(async (resolve, reject) => {
       try {

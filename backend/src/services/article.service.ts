@@ -4,8 +4,8 @@ import { connectionErrors } from "../constants";
 import { isEmpty, isNull } from "lodash";
 import { appConfig } from "../config";
 import { ethers } from "ethers";
-
 import * as jwt from "jsonwebtoken";
+
 import {
   getZenithAddressAndABI,
   getGovernorContractAndABI,
@@ -24,24 +24,35 @@ export default class ArticleService {
       try {
         let article: any = await this.article.findOne({
           title: payload.title,
-          status: payload.status,
           deleted: false
         });
-        if (isNull(article)) {
-          article = {};
-          article.title = payload.title+new Date();
-          article.status = articleStatus.SUBMITTED;
-          article.created_at = new Date();
-          article.authors = payload.authors;
-          //article.file = file;
+
+        console.log(`here `)
+        const { name: filename, content: path } = payload.file;
+
+        console.log(`name ${filename} path ${path}`)
+
+        if (!article) {
+          article = {
+            title: payload.title,
+            status: "SUBMITTED", // Replace with your actual status enum or constant
+            walletAddresses: payload.walletAddresses,
+            created_at: new Date(),
+            filename: payload.file.name,
+            filePath: payload.file.filePath,
+            fileType: payload.file.type,
+            extension: payload.file.extension,
+          };
           article = await this.article.save(article);
         }
-        return resolve(article);
+        resolve(article);
+
       } catch (e) {
         return reject(e);
       }
     });
   }
+
   getAllArtilces() {
     return new Promise(async (resolve, reject) => {
       try {

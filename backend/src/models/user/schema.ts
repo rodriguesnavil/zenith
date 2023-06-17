@@ -1,5 +1,11 @@
 import * as mongoose from 'mongoose';
 
+export enum userRole {
+    AUTHOR = 'AUTHOR',
+    REVIEWER = 'REVIEWER',
+    EDITOR = 'EDITOR',
+}
+
 const userSchema = {
     firstName: {
         type: String,
@@ -40,9 +46,12 @@ const userSchema = {
         default: false
     },
     role: {
-        type: [String],
-        required: true,
-        default: "author"
+        type: [{
+            type: String,
+            enum: ['AUTHOR', 'REVIEWER', 'EDITOR'],
+        }],
+        required: false,
+        default: "AUTHOR"
     }
 }
 

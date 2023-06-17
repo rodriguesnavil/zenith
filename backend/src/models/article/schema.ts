@@ -37,11 +37,11 @@ const articleSchema = {
         required:true,
         default:articleStatus.NOSTATUS
     },
-    authors: [{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:userSchema,
-        required:true
-    }]
+    walletAddresses: [String],
+    filePath: String,
+    filename: String,
+    fileType: String,
+    extension: String,
 }
 
 export const schema = articleSchema;

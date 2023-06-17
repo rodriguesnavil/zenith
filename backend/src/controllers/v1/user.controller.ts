@@ -5,7 +5,26 @@ const insertUser = async (req: Request, res: Response, next: NextFunction) => {
     let userService = new UserService(new UserModel());
     try{
         let payload = req.body
+        console.log(`insert user ${payload}`)
         let user = await userService.upsertUser(payload);
+        return res.send({
+            success: true,
+            data: {
+                user
+            }
+        })
+    }catch (e){
+        console.log(e);
+        return next(e)
+    }
+}
+
+const getUser = async (req: Request, res: Response, next: NextFunction) => {
+    let userService = new UserService(new UserModel());
+    try{
+        console.log(`get user ${req.query}`)
+        let {walletAddress} = req.params
+        let user = await userService.getUser(walletAddress);
         return res.send({
             success: true,
             data: {
@@ -85,5 +104,5 @@ const executeReviewer = async (req:Request,res:Response,next:NextFunction) => {
     }
 }
 export {
-    insertUser, getReviewers, proposeReviewer, voteReviewer, executeReviewer, queueReviewer
+    insertUser, getUser, getReviewers, proposeReviewer, voteReviewer, executeReviewer, queueReviewer
 }

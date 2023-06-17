@@ -9,12 +9,14 @@ const insertArticle = async (
 ) => {
   let articleService = new ArticleService(new ArticleModel());
   try {
+    console.log(`here in controller`);
     let payload = req.body;
-    // const file = req.file
-    // if (!file) {
-    //   res.status(400).json({ message: "No file uploaded" });
-    //   return;
-    // }
+    
+    if (!payload.file) {
+      res.status(400).json({ message: "No file uploaded" });
+      return;
+    }
+
     let response = await articleService.upsertArticle(payload);
     return res.send({
       success: true,

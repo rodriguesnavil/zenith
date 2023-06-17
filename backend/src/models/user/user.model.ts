@@ -1,4 +1,4 @@
-import {schema} from './schema';
+import {schema, userRole} from './schema';
 import * as mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
@@ -18,7 +18,7 @@ export type User  = {
     profileImage?: string;
     deleted: boolean | Date,
     created_at: Date,
-    role:[string]
+    role:[userRole]
 }
 
 export type Query  = {
