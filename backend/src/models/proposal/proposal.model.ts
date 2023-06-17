@@ -9,6 +9,7 @@ const ProposalSchema = new mongoose.Schema(
     }
 )
 export type Proposal = {
+    _id:string,
     proposalId:string,
     proposer:string,
     targetContractAddress:[string],
@@ -24,6 +25,7 @@ export type Proposal = {
 }
 
 export type Query = {
+    _id?:string
     proposalId?:string
     targetContractAddress?:string
     deleted?:boolean | Date
@@ -42,9 +44,11 @@ export class ProposalModel {
     }
 
     async findById(id: string, projection= {}, options: mongoose.QueryOptions = {}): Promise<mongoose.LeanDocument<Proposal>>{
+        return this.proposalModel.findOne({_id: id},projection, options).lean();
+    }
+    async findByProposalId(id: string, projection= {}, options: mongoose.QueryOptions = {}): Promise<mongoose.LeanDocument<Proposal>>{
         return this.proposalModel.findOne({proposalId: id},projection, options).lean();
     }
-
     async findOne(query:Query, projection= {}, options: mongoose.QueryOptions = {}): Promise<mongoose.LeanDocument<Proposal>> {
         let q: mongoose.FilterQuery<any> = query;
         return this.proposalModel.findOne(q, projection, options).lean();

@@ -7,49 +7,72 @@ import { ethers } from "ethers";
 
 import * as jwt from "jsonwebtoken";
 import {
-    getZenithAddressAndABI,
-    getGovernorContractAndABI,
-    FUNCTION_TO_CALL_Article,
-  } from "../helper-contract";
+  getZenithAddressAndABI,
+  getGovernorContractAndABI,
+  FUNCTION_TO_CALL_Article,
+} from "../helper-contract";
 import { articleStatus } from "../models/article/schema";
-  
 
 export default class ArticleService {
-    article: ArticleModel
-    constructor(article: ArticleModel) {
-        this.article = article;
-    }
+  article: ArticleModel;
+  constructor(article: ArticleModel) {
+    this.article = article;
+  }
 
-    upsertArticle(payload: any) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let article: any = await this.article.findOne( {title:payload.title, status: payload.status}, );
-                if (isNull(article)) {
-                    article = {};
-                    article.title = payload.title;
-                    article.status = articleStatus.SUBMITTED;
-                    article.created_at = new Date();
-                    article.authors = payload.authors;
-                    //article.file = file;
-                    article = await this.article.save(article);
-                    
-                }
-                return resolve(article);
-            } catch (e) {
-                return reject(e)
-            }
-        })
-    }
-
+  upsertArticle(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let article: any = await this.article.findOne({
+          title: payload.title,
+          status: payload.status,
+          deleted: false
+        });
+        if (isNull(article)) {
+          article = {};
+          article.title = payload.title+new Date();
+          article.status = articleStatus.SUBMITTED;
+          article.created_at = new Date();
+          article.authors = payload.authors;
+          //article.file = file;
+          article = await this.article.save(article);
+        }
+        return resolve(article);
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+  getAllArtilces() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let articles: any = await this.article.find({deleted:false});
+        return resolve(articles)
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+  getArticle(id:any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let article: any = await this.article.findById(id);
+        return resolve(article)
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
   proposeArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(`proposing ${payload.articleId} and ${FUNCTION_TO_CALL_Article}`);
+        console.log(
+          `proposing ${payload.articleId} and ${FUNCTION_TO_CALL_Article}`
+        );
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
-            FUNCTION_TO_CALL_Article,
-            [payload.articleId]
+          FUNCTION_TO_CALL_Article,
+          [payload.articleId]
         );
         const PROPOSAL_DESCRIPTION = payload.description;
         console.log(
@@ -61,7 +84,7 @@ export default class ArticleService {
           [encodedFunctionCall],
           PROPOSAL_DESCRIPTION
         );
-        
+
         const proposeTxReceipt = await proposeTx.wait(1);
         const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
@@ -83,7 +106,7 @@ export default class ArticleService {
           payload.voteWay,
           payload.reason
         );
-        const voteTxReceipt = await voteTx.wait(1)
+        const voteTxReceipt = await voteTx.wait(1);
         proposalState = await governorContract.state(payload.proposalId);
         console.log(`Proposal state after vote is ${proposalState}`);
         return resolve(proposalState);
@@ -97,7 +120,7 @@ export default class ArticleService {
       try {
         const args = [payload.articleId];
         const functionToCall = FUNCTION_TO_CALL_Article;
-        const PROPOSAL_DESCRIPTION = payload.description
+        const PROPOSAL_DESCRIPTION = payload.description;
         const zenithContract = await getZenithAddressAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           functionToCall,
@@ -114,7 +137,7 @@ export default class ArticleService {
           [encodedFunctionCall],
           descriptionHash
         );
-        const queueTxReceipt = await queueTx.wait(1)
+        const queueTxReceipt = await queueTx.wait(1);
         return resolve("success");
       } catch (e) {
         return reject(e);
@@ -145,11 +168,13 @@ export default class ArticleService {
           [encodedFunctionCall],
           descriptionHash
         );
-        const executeTxReceipt = await executeTx.wait(1)
+        const executeTxReceipt = await executeTx.wait(1);
         const isArticlePublished = await zenithContract.isArticlePublished(
           payload.articleId
         );
-        console.log(`Article ID = ${payload.articleId} and Article status = ${isArticlePublished}`);
+        console.log(
+          `Article ID = ${payload.articleId} and Article status = ${isArticlePublished}`
+        );
         return resolve(isArticlePublished);
       } catch (e) {
         return reject(e);

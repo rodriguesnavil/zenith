@@ -15,11 +15,46 @@ const insertArticle = async (
     //   res.status(400).json({ message: "No file uploaded" });
     //   return;
     // }
-    let article = await articleService.upsertArticle(payload);
+    let response = await articleService.upsertArticle(payload);
     return res.send({
       success: true,
       data: {
-        article,
+        response,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+const getAllArtilces = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  let articleService = new ArticleService(new ArticleModel());
+  try {
+    let response = await articleService.getAllArtilces();
+    return res.send({
+      success: true,
+      data: {
+        response,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+const getArticle = async (req: Request, res: Response, next: NextFunction) => {
+  let articleService = new ArticleService(new ArticleModel());
+  try {
+    const id = req.params.articleId;
+    let response = await articleService.getArticle(id);
+    return res.send({
+      success: true,
+      data: {
+        response,
       },
     });
   } catch (e) {
@@ -97,4 +132,6 @@ export {
   voteArticle,
   queueArticle,
   executeArticle,
+  getAllArtilces,
+  getArticle,
 };

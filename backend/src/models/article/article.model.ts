@@ -21,6 +21,7 @@ export type Query = {
     _id?: string
     title?:string
     status:articleStatus
+    deleted:boolean
 }
 
 export class ArticleModel {

@@ -8,7 +8,7 @@ import * as fs from "fs";
 const path = require("path");
 const FormData = require("form-data");
 
-export class LightHouseService {
+export default class LightHouseService {
   constructor() {}
   public uploadVolume(filename: string) {
     return new Promise(async (resolve, reject) => {

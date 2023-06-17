@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import {getDealClientContractAndABI} from "../helper-contract"
-import * as LightHouseService from "../services/lighthouse.service"
+import LightHouseService from "../services/lighthouse.service"
 import {LIGHTHOUSE_DOWNLOAD_URL} from "../helper-lighthouse"
 const CID = require("cids")
 
@@ -26,8 +26,8 @@ export default class makeDealClass {
         const startEpoch = payload.startEpoch
         const endEpoch = payload.endEpoch
         
-        const uploadLightHouseService = new LightHouseService.LightHouseService()
-        const params: Record<string, any> = await uploadLightHouseService.getParams(filename)
+        let lightHouseService = new LightHouseService()
+        const params: Record<string, any> = await lightHouseService.getParams(filename)
         
         const pieceCid = params.pieceCid;
         const pieceSize = params.pieceSize;
