@@ -42,6 +42,7 @@ const articleSchema = {
     filename: String,
     fileType: String,
     extension: String,
+    reviewersWalletAddress:[String]
 }
 
 export const schema = articleSchema;

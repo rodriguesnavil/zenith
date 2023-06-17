@@ -1,7 +1,8 @@
 import * as express from 'express';
 import validateRequest = require("../../middlewares/validateSchema");
 import * as Joi from "joi";
-import {insertArticle,getAllArtilces, getArticle, proposeArticle, voteArticle, queueArticle, executeArticle} from './../../controllers/v1/article.controller'
+import {insertArticle,getAllArtilces, getArticle, proposeArticle, voteArticle, queueArticle, executeArticle,  assignReviewers,
+    getAssignedArticles} from './../../controllers/v1/article.controller'
 import {globals} from './../../constants'
 import {fileHandler} from "../../middlewares/fileHandler"
 import * as multer from 'multer'
@@ -39,6 +40,8 @@ router.post('/article/propose',  proposeArticle);
 router.post('/article/vote',  voteArticle);
 router.post('/article/queue',  queueArticle);
 router.post('/article/execute',  executeArticle);
+router.post('/article/assignReviewers', assignReviewers)
+router.post('/article/getAssignedArticles',getAssignedArticles)
 
 
 

@@ -6,12 +6,13 @@ import { appConfig } from "../config";
 import { ethers } from "ethers";
 import * as jwt from "jsonwebtoken";
 
+import { articleStatus } from "../models/article/schema";
+
 import {
   getZenithAddressAndABI,
   getGovernorContractAndABI,
   FUNCTION_TO_CALL_Article,
 } from "../helper-contract";
-import { articleStatus } from "../models/article/schema";
 
 export default class ArticleService {
   article: ArticleModel;
@@ -24,13 +25,13 @@ export default class ArticleService {
       try {
         let article: any = await this.article.findOne({
           title: payload.title,
-          deleted: false
+          deleted: false,
         });
 
-        console.log(`here `)
+        console.log(`here `);
         const { name: filename, content: path } = payload.file;
 
-        console.log(`name ${filename} path ${path}`)
+        console.log(`name ${filename} path ${path}`);
 
         if (!article) {
           article = {
@@ -46,7 +47,6 @@ export default class ArticleService {
           article = await this.article.save(article);
         }
         resolve(article);
-
       } catch (e) {
         return reject(e);
       }
@@ -56,18 +56,18 @@ export default class ArticleService {
   getAllArticles() {
     return new Promise(async (resolve, reject) => {
       try {
-        let articles: any = await this.article.find({deleted:false});
-        return resolve(articles)
+        let articles: any = await this.article.find({ deleted: false });
+        return resolve(articles);
       } catch (e) {
         return reject(e);
       }
     });
   }
-  getArticle(id:any) {
+  getArticle(id: any) {
     return new Promise(async (resolve, reject) => {
       try {
         let article: any = await this.article.findById(id);
-        return resolve(article)
+        return resolve(article);
       } catch (e) {
         return reject(e);
       }
@@ -187,6 +187,33 @@ export default class ArticleService {
           `Article ID = ${payload.articleId} and Article status = ${isArticlePublished}`
         );
         return resolve(isArticlePublished);
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+  assignReviewers(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let article: any = await this.article.findById(payload.id);
+        if (isNull(article)) {
+          return reject(`No article with id: ${payload.id} exists`);
+        }
+        article.reviewersWalletAddress = payload.reviewersWalletAddress;
+        article.status = articleStatus.REVIEWERASSIGNED;
+        let response: any = await this.article.updateOne(payload.id, article);
+        return resolve(response);
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+
+  getAssignedArticles(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let articles = await this.article.find({reviewersWalletAddress: payload.reviewerWalletAddress, status:articleStatus.REVIEWERASSIGNED})
+        return resolve(articles)
       } catch (e) {
         return reject(e);
       }

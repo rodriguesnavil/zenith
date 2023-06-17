@@ -16,6 +16,7 @@ export type Article = {
     status: articleStatus
     walletAddresses: string[],
     filePath: string,
+    reviwersWalletAddress:string[]
 }
 
 export type Query = {
@@ -25,6 +26,7 @@ export type Query = {
     deleted:boolean,
     walletAddresses?: string[],
     filePath?: string,
+    reviewersWalletAddress?: string
 }
 
 export class ArticleModel {

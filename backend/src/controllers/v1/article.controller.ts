@@ -9,9 +9,8 @@ const insertArticle = async (
 ) => {
   let articleService = new ArticleService(new ArticleModel());
   try {
-    console.log(`here in controller`);
     let payload = req.body;
-    
+
     if (!payload.file) {
       res.status(400).json({ message: "No file uploaded" });
       return;
@@ -128,6 +127,49 @@ const executeArticle = async (
     return next(e);
   }
 };
+const assignReviewers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let articleService = new ArticleService(new ArticleModel());
+
+    let payload = req.body;
+    let response = await articleService.assignReviewers(payload);
+    return res.send({
+      success: true,
+      data: {
+        response,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+const getAssignedArticles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let articleService = new ArticleService(new ArticleModel());
+
+    let payload = req.body;
+    let response = await articleService.getAssignedArticles(payload);
+    return res.send({
+      success: true,
+      data: {
+        response,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+
 export {
   insertArticle,
   proposeArticle,
@@ -136,4 +178,6 @@ export {
   executeArticle,
   getAllArtilces,
   getArticle,
+  assignReviewers,
+  getAssignedArticles,
 };
