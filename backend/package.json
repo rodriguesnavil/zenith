@@ -6,7 +6,7 @@
   "scripts": {
     "tsc": "./node_modules/typescript/bin/tsc",
     "build": "tsc",
-    "start": "tsc && node dist/index.js"
+    "start": "nodemon --exec ts-node ./src/index.ts"
   },
   "engines": {
     "node": "16.15.0"
@@ -45,6 +45,8 @@
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.3.1",
     "@types/winston": "^2.4.4",
-    "cids": "^1.1.9"
+    "cids": "^1.1.9",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
   }
 }
