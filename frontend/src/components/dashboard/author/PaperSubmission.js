@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Paper, Typography, TextField, Button, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { submitPaper } from '../../../services/ApiService';
+import { UserContext } from '../../../contexts/UserContext';
 
 const PaperSubmission = () => {
+  const { address } = useContext(UserContext);
   const [title, setTitle] = useState('');
   const [file, setFile] = useState(null);
 
@@ -12,11 +15,24 @@ const PaperSubmission = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = (event) => {
+  console.log(`address: ${address}`)
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    // Upload the file to lighthouse
-    // Mint a new NFT with the IPFS hash of the file
-    // Add the paper to the blockchain
+    try {
+      const formData = new FormData();
+      formData.append('title', title);
+      formData.append('file', file);
+      formData.append('walletAddress', address); // Fetch walletAddress from the user context
+
+      const response = await submitPaper(formData); // Send form data object to the API service
+
+      if (response.success) {
+        // handle successful submission here...
+        // navigate or display a success message
+      }
+    } catch (error) {
+      console.error('Failed to submit paper:', error);
+    }
   };
 
   return (

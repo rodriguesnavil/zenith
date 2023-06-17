@@ -10,6 +10,7 @@ import Reader from './components/purchase/Reader';
 import PaperSubmission from './components/dashboard/author/PaperSubmission';
 import ProposeReviewer from './components/dashboard/reviewer/ProposeReviewer'
 import VoteReviewer from './components/dashboard/reviewer/VoteReviewer'
+import Register from './components/auth/Register';
 
 const AppRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AppRoutes = () => {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/role-select" element={<RoleSelect />} />
           <Route path="/submit-paper" element={<PaperSubmission />} />
           <Route path="/dashboard" element={<Dashboard />} />
