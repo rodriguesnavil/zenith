@@ -33,8 +33,8 @@ const upload = multer({ storage: storage })
 router.post('/article', upload.single("file"), fileHandler, insertArticle);
 
 // router.post('/article', insertArticle);
-router.get('/article/:articleId',getArticle)
 router.get('/getAllArticles', getAllArtilces);
+router.get('/article/:articleId',getArticle);
 router.post('/article/propose',  proposeArticle);
 router.post('/article/vote',  voteArticle);
 router.post('/article/queue',  queueArticle);
