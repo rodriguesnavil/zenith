@@ -108,6 +108,26 @@ export const proposeArticle = async (articleId) => {
   }
 }
 
+export const getProposalsWithVotingStatus = async () => {
+  try {
+    const response = await apiClient.get(`/v1/proposal/getProposalsWithVotingStatus`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch proposals with voting status: ${error}`);
+    throw error;
+  }
+}
+
+export const castVote = async (payload) => {
+  try {
+    const response = await apiClient.post(`/v1/article/vote`, payload);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to cast vote: ${error}`);
+    throw error;
+  }
+}
+
 export const insetComment = async (payload) => {
   try {
     const response = await apiClient.post(`/v1/comment/insertComment`, payload);

@@ -111,18 +111,20 @@ export default class ArticleService {
     return new Promise(async (resolve, reject) => {
       try {
         console.log("Voting.....");
+        console.log(`proposal stringified ${JSON.stringify(payload)}`)
         const governorContract = await getGovernorContractAndABI();
-        let proposalState = await governorContract.state(payload.proposalId);
-        console.log(`Proposal state before vote is ${proposalState}`);
+        // let proposalState = await governorContract.state(payload.proposalId);
+        // console.log(`Proposal state before vote is ${proposalState}`);
+        // console.log(`Voting with ${payload.proposalId}, ${payload.voteWay} and ${payload.reason}`)
         const voteTx = await governorContract.castVoteWithReason(
           payload.proposalId,
           payload.voteWay,
           payload.reason
         );
         const voteTxReceipt = await voteTx.wait(1);
-        proposalState = await governorContract.state(payload.proposalId);
-        console.log(`Proposal state after vote is ${proposalState}`);
-        return resolve(proposalState);
+        // proposalState = await governorContract.state(payload.proposalId);
+        // console.log(`Proposal state after vote is ${proposalState}`);
+        return resolve(voteTxReceipt);
       } catch (e) {
         return reject(e);
       }

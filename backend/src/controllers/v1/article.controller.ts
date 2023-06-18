@@ -101,7 +101,7 @@ const proposeArticle = async (
       articleId,
       payloadCID: paramsResponse.label,
       authorWalletAddress: article.walletAddresses[0],
-      description: "EPNS Link of a proposal",
+      description: "EPNS12 Link of a proposal",
     };
 
     console.log(`articlePayload --> ${JSON.stringify(articlePayload)}`)
