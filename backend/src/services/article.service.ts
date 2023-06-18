@@ -215,7 +215,22 @@ export default class ArticleService {
   getAssignedArticles(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        let articles = await this.article.find({reviewersWalletAddress: payload.reviewerWalletAddress, status:articleStatus.REVIEWERASSIGNED})
+        console.log(`reviewersWalletAddress is ${payload.reviewersWalletAddress}`)
+        let articles = await this.article.find({
+          status: articleStatus.REVIEWERASSIGNED, 
+          reviewersWalletAddress: {$in: payload.reviewersWalletAddress}
+        })
+        return resolve(articles)
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
+
+  updateArticleStatus(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let articles = await this.article.updateOne({_id: payload.articleId, deleted: false}, {$set: {status: payload.status}}, {new: true})
         return resolve(articles)
       } catch (e) {
         return reject(e);

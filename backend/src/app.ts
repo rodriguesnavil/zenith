@@ -6,6 +6,7 @@ import * as logger from "./commons/logger";
 import * as error from "./commons/errorHandler"
 import * as routes from "./routes"
 import mongoose from "./commons/mongoose";
+import * as path from 'path';
 
 const app = express();
 
@@ -29,6 +30,11 @@ app.use("*", error.notFound);
 // error handler, send stacktrace only during development
 app.use(error.handler);
 
+// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.resolve('src','uploads')));
+
+console.log(path.join(__dirname, 'uploads', 'file-1687003075560.pdf'))
+console.log(path.resolve('src','uploads'))
 
 const startWithPort = async (port: Number) => {
     try {

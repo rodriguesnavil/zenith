@@ -69,14 +69,41 @@ export const assignReviewer = async (payload) => {
   }
 }
 
-// router.get('/user/:walletAddress', getUser);
-
 export const getUserByWalletAddress = async (walletAddress) => {
   try {
     const response = await apiClient.get(`/v1/user/${walletAddress}`);
     return response.data;
   } catch (error) {
     console.error(`Failed to fetch user: ${error}`);
+    throw error;
+  }
+}
+
+export const getAssignedArticles = async (walletAddress) => {
+  try {
+    let payload = {
+      reviewersWalletAddress: walletAddress
+    }
+    const response = await apiClient.post(`/v1/article/getAssignedArticles`, payload);
+    // in above response add new field pdf with the value https://www.orimi.com/pdf-test.pdf
+    console.log(`response.data.response ${JSON.stringify(response.data.data.response)}`)
+    response.data.data.response.forEach(element => {
+      element.pdf = "https://www.orimi.com/pdf-test.pdf"
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch assigned articles: ${error}`);
+    throw error;
+  }
+}
+
+export const insetComment = async (payload) => {
+  try {
+    const response = await apiClient.post(`/v1/comment/insertComment`, payload);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to submit review: ${error}`);
     throw error;
   }
 }
