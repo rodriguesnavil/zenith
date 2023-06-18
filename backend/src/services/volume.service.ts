@@ -9,6 +9,7 @@ import { ArticleModel } from "../models/article/article.model";
 import ArticleService from "../services/article.service";
 import LightHouseService from "../services/lighthouse.service";
 import MakeDealService from "../services/makeDeal.service";
+import * as MergePDFFiles from "./makePDF.service"
 
 import { isNull } from "lodash";
 export default class VolumeService {
@@ -74,10 +75,14 @@ export default class VolumeService {
           let article: any = await articleService.getArticle(
             volume.artilces[i].id
           );
-          fileNames.push(article.title);
+          fileNames.push(article.filename);
           //save all the file in tmp folder
         }
-        //make all file in to one file and give volumeId as file name
+        //Fill these fields 
+        let inputFilePaths: any= []
+        let outputFilePath: any
+        MergePDFFiles.mergePDFFiles(inputFilePaths,outputFilePath);
+        //make sure what you are sending.
         let filename;
         lightHouseService.uploadVolume(filename);
         let makeDealPayload = {
