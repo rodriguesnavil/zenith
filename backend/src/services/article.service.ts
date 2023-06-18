@@ -226,4 +226,15 @@ export default class ArticleService {
       }
     });
   }
+
+  updateArticleStatus(payload: any) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let articles = await this.article.updateOne({_id: payload.articleId, deleted: false}, {$set: {status: payload.status}}, {new: true})
+        return resolve(articles)
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
 }

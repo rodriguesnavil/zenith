@@ -26,7 +26,7 @@ export type Query = {
     deleted:boolean,
     walletAddresses?: string[],
     filePath?: string,
-    reviewersWalletAddress?: string
+    reviewersWalletAddress?: string[]
 }
 
 export class ArticleModel {
