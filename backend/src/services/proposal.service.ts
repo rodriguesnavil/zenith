@@ -105,4 +105,20 @@ export default class ProposalService {
       }
     });
   }
+  getProposalsWithVotingStatus() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let proposals: any = await this.proposal.find({
+           status: proposalStatus.VOTING
+        });
+        if (isNull(proposals)) {
+          return resolve(`No proposal with ${proposalStatus.VOTING} exsists`);
+        } else {
+         return resolve(proposals)
+        }
+      } catch (e) {
+        return reject(e);
+      }
+    });
+  }
 }
