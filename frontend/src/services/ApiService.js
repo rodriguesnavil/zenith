@@ -118,7 +118,7 @@ export const queueAndExecuteArticle = async (articleId, walletAddressArray, file
     let queueAndExecutePayload = {
       payloadCID: response.data.data.response.label,
       authorWalletAddress: walletAddressArray[0],
-      description: "New description 33",
+      description: "New description 34",
     }
 
     const queueResponse = await apiClient.post(`/v1/article/queue`, queueAndExecutePayload);

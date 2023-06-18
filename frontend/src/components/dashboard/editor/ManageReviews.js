@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Grid, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Box, Button, Grid, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Alert } from '@mui/material';
 import { getAllArticles, getReviewers, assignReviewer, proposeArticle, queueAndExecuteArticle, publishArticle } from '../../../services/ApiService';
 
 const ManageReviews = () => {
@@ -64,6 +64,11 @@ const ManageReviews = () => {
         Manage Reviews
       </Typography>
       <TableContainer>
+      {publishAlert && (
+        <Alert severity="success">
+          Deal has been Published
+        </Alert>
+      )}
         <Table>
           <TableHead>
             <TableRow>
@@ -102,7 +107,7 @@ const ManageReviews = () => {
                       Propose
                     </Button>
                   )}
-                  {article.status === 'Review Completed' && isProposed && (
+                  {article.status === 'Review Completed' && isProposed && proposalStatus[article._id] !== 'publish' && (
                     <Button color="primary" variant="contained" onClick={() => handleExecuteArticle(article._id, article.walletAddresses, article.filePath)}>
                       Queue and Execute
                     </Button>

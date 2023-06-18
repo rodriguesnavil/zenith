@@ -101,7 +101,7 @@ const proposeArticle = async (
       articleId,
       payloadCID: paramsResponse.label,
       authorWalletAddress: article.walletAddresses[0],
-      description: "New description 33",
+      description: "New description 34",
     };
 
     console.log(`articlePayload --> ${JSON.stringify(articlePayload)}`)
