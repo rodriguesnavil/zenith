@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import ArticleService from "../../services/article.service";
+import LightHouseService from "../../services/lighthouse.service";
 import { ArticleModel } from "../../models/article/article.model";
+import * as path from "path";
 
 const insertArticle = async (
   req: Request,
@@ -69,8 +71,41 @@ const proposeArticle = async (
   next: NextFunction
 ) => {
   let articleService = new ArticleService(new ArticleModel());
+  let lighthouseService = new LightHouseService();
   try {
-    let response = await articleService.proposeArticle(req.body);
+    // 1. call the uploadvolume from lighthouse service, send the filename, file path
+    // 2. call the getparams from lighthouse service, send the filename. from the resp(we need label i.e payloadCID)
+    // 3. tokenId will be at the backend
+
+    let articleId = req.params.articleId;
+
+    let article: any = await articleService.getArticle(articleId);
+    console.log(`article --> ${JSON.stringify(article)}`)
+
+    let fileName = path.basename(article.filePath);
+    
+    let uploadVolumeResponse = await lighthouseService.uploadVolume(
+      fileName
+    );
+
+    console.log(`uploadVolumeResponse --> ${JSON.stringify(uploadVolumeResponse)}`)
+
+    let paramsResponse = await lighthouseService.getParams(fileName);
+
+    console.log(`getParamsResponse --> ${JSON.stringify(paramsResponse)}`)
+
+    
+    // {"pieceCid":"baga6ea4seaqeebab74ccvppzjnoewiogkdsvza3226pbrun3taow7ygpgnid4ai","pieceSize":131072,"label":"bafybeigr5llzvrv4df22ouvcixyfq22hjl4ttrcgihrwsoy6llkzhnkmti","carSize":116722,"id":"29bd3462-cf84-43a0-ad18-1d2da9008842"}
+    
+    let articlePayload = {
+      articleId,
+      payloadCID: paramsResponse.label,
+      authorWalletAddress: article.walletAddresses[0],
+      description: "EPNS Link of a proposal",
+    };
+
+    console.log(`articlePayload --> ${JSON.stringify(articlePayload)}`)
+    let response = await articleService.proposeArticle(articlePayload);
     return res.send({
       success: true,
       proposalId: response,

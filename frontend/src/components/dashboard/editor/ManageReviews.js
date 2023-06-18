@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Paper, Typography, List, ListItem, ListItemText, Button, Box, Select, MenuItem } from '@mui/material';
-import { getAllArticles, getReviewers, assignReviewer } from '../../../services/ApiService';
+import { Box, Button, Grid, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { getAllArticles, getReviewers, assignReviewer, proposeArticle } from '../../../services/ApiService';
 
 const ManageReviews = () => {
   const [articles, setArticles] = useState([]);
@@ -11,21 +11,24 @@ const ManageReviews = () => {
       const [articlesResponse, reviewersResponse] = await Promise.all([getAllArticles(), getReviewers()]);
       setArticles(articlesResponse.data.response);
       setReviewers(reviewersResponse.data.user);
-      console.log(`reviewersResponse: ${JSON.stringify(reviewersResponse)}`);
     };
 
     fetchArticlesAndReviewers();
   }, []);
 
   const handleAssignReviewer = async (articleId, reviewersWalletAddress) => {
-    console.log(`articleId: ${articleId}, reviewersWalletAddress: ${reviewersWalletAddress}`);
     let payload = {
       articleId: articleId,
       reviewersWalletAddress: reviewersWalletAddress
     };
     const result = await assignReviewer(payload);
     const updatedArticle = result.data.response;
-    console.log(`updatedArticle: ${JSON.stringify(updatedArticle)}`);
+    setArticles(articles.map(a => a._id === updatedArticle._id ? updatedArticle : a));
+  };
+
+  const handleProposeArticle = async (articleId) => {
+    const result = await proposeArticle(articleId);
+    const updatedArticle = result.data.response;
     setArticles(articles.map(a => a._id === updatedArticle._id ? updatedArticle : a));
   };
 
@@ -34,35 +37,51 @@ const ManageReviews = () => {
       <Typography variant="h5" gutterBottom>
         Manage Reviews
       </Typography>
-      <Paper>
-        <List>
-          {articles.map((article) => (
-            <ListItem key={article._id}>
-              <ListItemText
-                primary={`Paper: ${article.title}, Status: ${article.status}`}
-              />
-              {article.status === 'SUBMITTED' && (
-                <>
-                  <Select
-                    variant="outlined"
-                    value=""
-                    onChange={(e) => handleAssignReviewer(article._id, e.target.value)}
-                  >
-                    <MenuItem value="" disabled>
-                      Select Reviewer
-                    </MenuItem>
-                    {reviewers.map((reviewer) => (
-                      <MenuItem key={reviewer._id} value={reviewer.walletAddress}>
-                        {reviewer.firstName} {reviewer.lastName}
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Paper</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Assign Reviewer</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {articles.map((article) => (
+              <TableRow key={article._id}>
+                <TableCell>{article.title}</TableCell>
+                <TableCell>{article.status}</TableCell>
+                <TableCell>
+                  {article.status === 'SUBMITTED' && (
+                    <Select
+                      variant="outlined"
+                      defaultValue=""
+                      onChange={(e) => handleAssignReviewer(article._id, e.target.value)}
+                    >
+                      <MenuItem value="" disabled>
+                        Select Reviewer
                       </MenuItem>
-                    ))}
-                  </Select>
-                </>
-              )}
-            </ListItem>
-          ))}
-        </List>
-      </Paper>
+                      {reviewers.map((reviewer) => (
+                        <MenuItem key={reviewer._id} value={reviewer.walletAddress}>
+                          {reviewer.firstName} {reviewer.lastName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {article.status === 'Review Completed' && (
+                    <Button color="primary" variant="contained" onClick={() => handleProposeArticle(article._id)}>
+                      Propose
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };

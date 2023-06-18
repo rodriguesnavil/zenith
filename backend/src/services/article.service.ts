@@ -97,6 +97,8 @@ export default class ArticleService {
         );
 
         const proposeTxReceipt = await proposeTx.wait(1);
+
+        console.log(`Proposed with tx hash:\n  ${JSON.stringify(proposeTxReceipt)}`);
         const proposalId: any = proposeTxReceipt.events[0].args.proposalId;
         console.log(`Proposed with proposal ID:\n  ${proposalId}`);
         return resolve(proposalId.toString());

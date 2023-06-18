@@ -20,10 +20,9 @@ export default class LightHouseService {
           Authorization: `Bearer ${apiKey}`,
           ...formData.getHeaders(),
         };
-        const baseDirectory = __dirname;
-        const relativePath = "../../test/"+filename;
-        const absolutePath = path.join(baseDirectory, relativePath);
-        console.log(`absolutePath is ${absolutePath}`)
+        
+        let absolutePath = path.join(__dirname, '..', '/uploads', filename)
+        console.log(`absolutePath --> ${absolutePath}`)
         formData.append("file", fs.createReadStream(absolutePath));
         axios
           .post(url, formData, { headers })

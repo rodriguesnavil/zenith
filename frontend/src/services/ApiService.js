@@ -98,6 +98,16 @@ export const getAssignedArticles = async (walletAddress) => {
   }
 }
 
+export const proposeArticle = async (articleId) => {
+  try {
+    const response = await apiClient.get(`/v1/article/propose/${articleId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to propose article: ${error}`);
+    throw error;
+  }
+}
+
 export const insetComment = async (payload) => {
   try {
     const response = await apiClient.post(`/v1/comment/insertComment`, payload);
