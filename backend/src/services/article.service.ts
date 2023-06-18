@@ -195,13 +195,16 @@ export default class ArticleService {
   assignReviewers(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        let article: any = await this.article.findById(payload.id);
+        console.log(`payload is ${JSON.stringify(payload)}`)
+        let article: any = await this.article.findById(payload.articleId);
+        console.log(`Article is ${JSON.stringify(article)}`);
         if (isNull(article)) {
-          return reject(`No article with id: ${payload.id} exists`);
+          return reject(`No article with id: ${payload.articleId} exists`);
         }
+        console.log(`reviewersWalletAddress is ${payload.reviewersWalletAddress}`)
         article.reviewersWalletAddress = payload.reviewersWalletAddress;
         article.status = articleStatus.REVIEWERASSIGNED;
-        let response: any = await this.article.updateOne(payload.id, article);
+        let response: any = await this.article.updateOne({_id: payload.articleId, deleted: false}, {$set: article}, {new: true});
         return resolve(response);
       } catch (e) {
         return reject(e);

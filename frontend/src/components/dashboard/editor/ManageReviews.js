@@ -17,8 +17,15 @@ const ManageReviews = () => {
     fetchArticlesAndReviewers();
   }, []);
 
-  const handleAssignReviewer = async (articleId, reviewerId) => {
-    const updatedArticle = await assignReviewer(articleId, reviewerId);
+  const handleAssignReviewer = async (articleId, reviewersWalletAddress) => {
+    console.log(`articleId: ${articleId}, reviewersWalletAddress: ${reviewersWalletAddress}`);
+    let payload = {
+      articleId: articleId,
+      reviewersWalletAddress: reviewersWalletAddress
+    };
+    const result = await assignReviewer(payload);
+    const updatedArticle = result.data.response;
+    console.log(`updatedArticle: ${JSON.stringify(updatedArticle)}`);
     setArticles(articles.map(a => a._id === updatedArticle._id ? updatedArticle : a));
   };
 
@@ -45,7 +52,7 @@ const ManageReviews = () => {
                       Select Reviewer
                     </MenuItem>
                     {reviewers.map((reviewer) => (
-                      <MenuItem key={reviewer._id} value={reviewer._id}>
+                      <MenuItem key={reviewer._id} value={reviewer.walletAddress}>
                         {reviewer.firstName} {reviewer.lastName}
                       </MenuItem>
                     ))}
