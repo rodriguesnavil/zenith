@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Zenith is Ownable,ERC721("Zenith","Zen") {
   uint public initialRep = 500;
@@ -11,6 +12,9 @@ contract Zenith is Ownable,ERC721("Zenith","Zen") {
   uint public downStep = 5;
   uint public maxRep = 1000;
   uint public minRep = 1;
+
+  using Counters for Counters.Counter;
+  Counters.Counter private _tokenIds;
 
   /** A mapping to store reputation of reviewers.
       If reviewer doesn't exsists, 0 is returned. 
@@ -57,9 +61,11 @@ contract Zenith is Ownable,ERC721("Zenith","Zen") {
     emit ReviewerReputationUpdated(_reviewer, oldRep,  reputation[_reviewer]);
   }
 
-  function addArticle(uint256 tokenId, string memory _payloadCID, address author) public onlyOwner {
-    payloadCID[tokenId] = _payloadCID;
-    _mint(author,tokenId);
+  function addArticle(string memory _payloadCID, address author) public onlyOwner {
+    _tokenIds.increment();
+    uint256 newTokenId = _tokenIds.current();
+    payloadCID[newTokenId] = _payloadCID;
+    _mint(author,newTokenId);
     emit ArticlePublished(_payloadCID);
   }
 }

@@ -83,7 +83,7 @@ export default class ArticleService {
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           FUNCTION_TO_CALL_Article,
-          [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
+          [payload.payloadCID,payload.authorWalletAddress]
         );
         const PROPOSAL_DESCRIPTION = payload.description;
         console.log(
@@ -129,7 +129,7 @@ export default class ArticleService {
   queueArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
+        const args = [payload.payloadCID,payload.authorWalletAddress]
         const functionToCall = FUNCTION_TO_CALL_Article;
         const PROPOSAL_DESCRIPTION = payload.description;
         const zenithContract = await getZenithAddressAndABI();
@@ -159,7 +159,7 @@ export default class ArticleService {
   executeArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
+        const args = [payload.payloadCID,payload.authorWalletAddress]
         const functionToCall = FUNCTION_TO_CALL_Article;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
@@ -180,13 +180,8 @@ export default class ArticleService {
           descriptionHash
         );
         const executeTxReceipt = await executeTx.wait(1);
-        const getPayloadCID = await zenithContract.getPayloadCID(
-          payload.tokenId
-        );
-        console.log(
-          `Article ID = ${payload.articleId} and Article status = ${getPayloadCID}`
-        );
-        return resolve(getPayloadCID);
+        let tokenId: any = executeTxReceipt.logs[1].topics[3].toString()
+        return resolve(tokenId);
       } catch (e) {
         return reject(e);
       }
