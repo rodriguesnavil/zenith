@@ -3,8 +3,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract Zenith is Ownable {
+contract Zenith is Ownable,ERC721("Zenith","Zen") {
   uint public initialRep = 500;
   uint public upStep = 10;
   uint public downStep = 5;
@@ -20,7 +21,7 @@ contract Zenith is Ownable {
       If article doesn't exsists, false is returned. 
       Otherwise true.     
   */
-  mapping(string => bool) public isPublished;
+  mapping(uint256 => string) public payloadCID;
 
   // Emitted when the stored value changes
   event ReviewerAdded(address reviewer, uint rep);
@@ -31,8 +32,8 @@ contract Zenith is Ownable {
     return reputation[reviewer];
   }
 
-  function isArticlePublished(string memory _id) public view returns (bool) {
-    return isPublished[_id];
+  function getPayloadCID(uint256 _tokenID) public view returns (string memory) {
+    return payloadCID[_tokenID];
   }
 
   function addReviewer(address _reviewer) public onlyOwner {
@@ -56,8 +57,9 @@ contract Zenith is Ownable {
     emit ReviewerReputationUpdated(_reviewer, oldRep,  reputation[_reviewer]);
   }
 
-  function addArticle(string memory _id) public onlyOwner {
-    isPublished[_id] = true;
-    emit ArticlePublished(_id);
+  function addArticle(uint256 tokenId, string memory _payloadCID, address author) public onlyOwner {
+    payloadCID[tokenId] = _payloadCID;
+    _mint(author,tokenId);
+    emit ArticlePublished(_payloadCID);
   }
 }

@@ -83,11 +83,11 @@ export default class ArticleService {
         const governorContract = await getGovernorContractAndABI();
         const encodedFunctionCall = zenithContract.interface.encodeFunctionData(
           FUNCTION_TO_CALL_Article,
-          [payload.articleId]
+          [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
         );
         const PROPOSAL_DESCRIPTION = payload.description;
         console.log(
-          `Proposing ${FUNCTION_TO_CALL_Article} on ${zenithContract.address} with ${payload.articleId}`
+          `Proposing ${FUNCTION_TO_CALL_Article} on ${zenithContract.address} with ${payload.articleId}, ${payload.payloadCID} and ${payload.authorWalletAddress}`
         );
         const proposeTx = await governorContract.propose(
           [zenithContract.address],
@@ -129,7 +129,7 @@ export default class ArticleService {
   queueArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.articleId];
+        const args = [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
         const functionToCall = FUNCTION_TO_CALL_Article;
         const PROPOSAL_DESCRIPTION = payload.description;
         const zenithContract = await getZenithAddressAndABI();
@@ -159,7 +159,7 @@ export default class ArticleService {
   executeArticle(payload: any) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = [payload.articleId];
+        const args = [payload.tokenId,payload.payloadCID,payload.authorWalletAddress]
         const functionToCall = FUNCTION_TO_CALL_Article;
         const zenithContract = await getZenithAddressAndABI();
         const governorContract = await getGovernorContractAndABI();
@@ -180,13 +180,13 @@ export default class ArticleService {
           descriptionHash
         );
         const executeTxReceipt = await executeTx.wait(1);
-        const isArticlePublished = await zenithContract.isArticlePublished(
-          payload.articleId
+        const getPayloadCID = await zenithContract.getPayloadCID(
+          payload.tokenId
         );
         console.log(
-          `Article ID = ${payload.articleId} and Article status = ${isArticlePublished}`
+          `Article ID = ${payload.articleId} and Article status = ${getPayloadCID}`
         );
-        return resolve(isArticlePublished);
+        return resolve(getPayloadCID);
       } catch (e) {
         return reject(e);
       }
