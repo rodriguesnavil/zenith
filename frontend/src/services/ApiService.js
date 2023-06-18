@@ -59,12 +59,24 @@ export const getReviewers = async () => {
   }
 }
 
-export const assignReviewer = async (articleId, reviewerId) => {
+export const assignReviewer = async (payload) => {
   try {
-    const response = await apiClient.post(`/v1/assignReviewer/${articleId}/${reviewerId}`);
+    const response = await apiClient.post(`/v1/article/assignReviewers`, payload);
     return response.data;
   } catch (error) {
     console.error(`Failed to assign reviewer: ${error}`);
+    throw error;
+  }
+}
+
+// router.get('/user/:walletAddress', getUser);
+
+export const getUserByWalletAddress = async (walletAddress) => {
+  try {
+    const response = await apiClient.get(`/v1/user/${walletAddress}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to fetch user: ${error}`);
     throw error;
   }
 }

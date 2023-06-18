@@ -22,7 +22,7 @@ const PaperSubmission = () => {
       const formData = new FormData();
       formData.append('title', title);
       formData.append('file', file);
-      formData.append('walletAddress', address); // Fetch walletAddress from the user context
+      formData.append('walletAddresses', address); // Fetch walletAddress from the user context
 
       const response = await submitPaper(formData); // Send form data object to the API service
 
