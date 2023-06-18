@@ -1,23 +1,45 @@
 import React, { useState, useContext } from 'react';
-import { FormControl, InputLabel, Select, MenuItem, Button, Typography, Box, Paper } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Button, Snackbar, Alert, Typography, Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { setUserRole } from '../../helpers/EthereumHelper';
 import { UserContext } from '../../contexts/UserContext';
+import { getUserByWalletAddress } from '../../services/ApiService';
 
 const RoleSelect = () => {
   const navigate = useNavigate();
   const [role, setRoleLocal] = useState(''); // local state
-  const { setRole } = useContext(UserContext); // global state  
+  const { setRole, address } = useContext(UserContext); // global state 
+  const [open, setOpen] = useState(false); // Snackbar visibility
+  const [error, setError] = useState(''); // error message
 
   const handleChange = (event) => {
     setRoleLocal(event.target.value);
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   const confirmRole = async () => {
-    const success = await setUserRole(role);
-    if (success) {
-      setRole(role);
-      navigate('/dashboard');
+    try {
+      console.log(`address is  ${address}`)
+      const response = await getUserByWalletAddress(address);
+      console.log(`response is ${JSON.stringify(response)}`)
+
+      if (response.data.user.role.includes(role.toUpperCase())) {
+        setRole(role);
+        navigate('/dashboard');
+      } else {
+        throw new Error(`You have selected an invalid role.`);
+      }
+    } catch (error) {
+      console.error(error);
+      setError(error.message);
+      setOpen(true);
     }
   };
 
@@ -56,6 +78,17 @@ const RoleSelect = () => {
           <Button variant="contained" color="primary" onClick={confirmRole} fullWidth>
             Confirm Role
           </Button>
+          <Snackbar
+            open={open}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          >
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                {error}
+            </Alert>
+          </Snackbar>
+
         </Box>
       </Paper>
     </Box>
