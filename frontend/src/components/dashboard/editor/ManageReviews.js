@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
-import { getAllArticles, getReviewers, assignReviewer, proposeArticle } from '../../../services/ApiService';
+import { getAllArticles, getReviewers, assignReviewer, proposeArticle, queueAndExecuteArticle, publishArticle } from '../../../services/ApiService';
 
 const ManageReviews = () => {
   const [articles, setArticles] = useState([]);
   const [reviewers, setReviewers] = useState([]);
+  const [isProposed, setIsProposed] = useState(false);
+  const [proposalStatus, setProposalStatus] = useState({});
+  const [publishAlert, setPublishAlert] = useState(false);
 
   useEffect(() => {
     const fetchArticlesAndReviewers = async () => {
@@ -12,6 +15,11 @@ const ManageReviews = () => {
       setArticles(articlesResponse.data.response);
       setReviewers(reviewersResponse.data.user);
     };
+
+    const proposalId = localStorage.getItem('proposalId');
+    if (proposalId) {
+      setIsProposed(true);
+    }
 
     fetchArticlesAndReviewers();
   }, []);
@@ -28,8 +36,26 @@ const ManageReviews = () => {
 
   const handleProposeArticle = async (articleId) => {
     const result = await proposeArticle(articleId);
-    const updatedArticle = result.data.response;
-    setArticles(articles.map(a => a._id === updatedArticle._id ? updatedArticle : a));
+    if (result.success) {
+      localStorage.setItem('proposalId', result.proposalId);
+      setIsProposed(true);
+    }
+  };
+
+  const handleExecuteArticle = async (articleId, walletAddressArray, articleFilePath) => {
+    const result = await queueAndExecuteArticle(articleId, walletAddressArray, articleFilePath);
+    console.log(`result ${JSON.stringify(result)}`)
+    if (result) {
+      setProposalStatus(prev => ({ ...prev, [articleId]: 'publish' }));
+    }
+  };
+
+  const handlePublishArticle = async (articleId, filePath) => {
+    const response = await publishArticle(articleId, filePath);
+    if (response.success) {
+      setProposalStatus(prev => ({ ...prev, [articleId]: 'success_published' }));
+      setPublishAlert(true);
+    }
   };
 
   return (
@@ -71,9 +97,19 @@ const ManageReviews = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {article.status === 'Review Completed' && (
+                  {article.status === 'Review Completed' && !isProposed && (
                     <Button color="primary" variant="contained" onClick={() => handleProposeArticle(article._id)}>
                       Propose
+                    </Button>
+                  )}
+                  {article.status === 'Review Completed' && isProposed && (
+                    <Button color="primary" variant="contained" onClick={() => handleExecuteArticle(article._id, article.walletAddresses, article.filePath)}>
+                      Queue and Execute
+                    </Button>
+                  )}
+                  {proposalStatus[article._id] === 'publish' && (
+                    <Button color="primary" variant="contained" onClick={() => handlePublishArticle(article._id, article.filePath)}>
+                      Publish
                     </Button>
                   )}
                 </TableCell>

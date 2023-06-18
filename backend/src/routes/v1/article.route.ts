@@ -2,7 +2,7 @@ import * as express from 'express';
 import validateRequest = require("../../middlewares/validateSchema");
 import * as Joi from "joi";
 import {insertArticle,getAllArtilces, getArticle, proposeArticle, voteArticle, queueArticle, executeArticle,  assignReviewers,
-    getAssignedArticles} from './../../controllers/v1/article.controller'
+    getAssignedArticles, getParams} from './../../controllers/v1/article.controller'
 import {globals} from './../../constants'
 import {fileHandler} from "../../middlewares/fileHandler"
 import * as multer from 'multer'
@@ -36,6 +36,7 @@ router.post('/article', upload.single("file"), fileHandler, insertArticle);
 // router.post('/article', insertArticle);
 router.get('/article/:articleId',getArticle);
 router.get('/article/propose/:articleId',  proposeArticle);
+router.get('/article/getParams/:fileName', getParams);
 router.get('/getAllArticles', getAllArtilces);
 router.post('/article/vote',  voteArticle);
 router.post('/article/queue',  queueArticle);

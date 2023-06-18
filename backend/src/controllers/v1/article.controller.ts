@@ -101,7 +101,7 @@ const proposeArticle = async (
       articleId,
       payloadCID: paramsResponse.label,
       authorWalletAddress: article.walletAddresses[0],
-      description: "EPNS12 Link of a proposal",
+      description: "New description 33",
     };
 
     console.log(`articlePayload --> ${JSON.stringify(articlePayload)}`)
@@ -205,6 +205,23 @@ const getAssignedArticles = async (
   }
 };
 
+const getParams = async (req: Request, res: Response, next: NextFunction) => {
+  let lighthouseService = new LightHouseService();
+  try {
+    let fileName = req.params.fileName;
+    let response = await lighthouseService.getParams(fileName);
+    return res.send({
+      success: true,
+      data: {
+        response,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
+};
+
 export {
   insertArticle,
   proposeArticle,
@@ -215,4 +232,5 @@ export {
   getArticle,
   assignReviewers,
   getAssignedArticles,
+  getParams
 };
