@@ -16,7 +16,7 @@ export const networkConfig: networkConfigInfo = {
   lotus:{}
 }
 
-export const developmentChains = ["hardhat", "localhost"]
+export const developmentChains = ["hardhat", "localhost", "lotus"]
 export const proposalsFile = "proposals.json"
 
 // Governor Values
