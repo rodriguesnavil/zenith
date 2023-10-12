@@ -27,9 +27,9 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       allowUnlimitedContractSize: true
     },
-    lotus: {
-      url: "http://127.0.0.1:1234/rpc/v1",
-      chainId: 31415926,
+    calibration: {
+      url: "https://api.calibration.node.glif.io/rpc/v1",
+      chainId: 314159,
       accounts: [PRIVATE_KEY],
       allowUnlimitedContractSize: true,
       gas: 1500000000

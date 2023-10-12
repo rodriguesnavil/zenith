@@ -33,9 +33,9 @@ const deployGovernorContract: DeployFunction = async function (hre: HardhatRunti
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
   })
   log(`GovernorContract at ${governorContract.address}`)
-  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-    await verify(governorContract.address, [])
-  }
+  // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+  //   await verify(governorContract.address, [])
+  // }
 }
 
 export default deployGovernorContract

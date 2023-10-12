@@ -13,7 +13,12 @@ export const networkConfig: networkConfigInfo = {
   sepolia: {
     blockConfirmations: 6,
   },
-  lotus:{}
+  lotus:{
+    blockConfirmations: 6,
+  },
+  calibration:{
+    blockConfirmations: 6,
+  },
 }
 
 export const developmentChains = ["hardhat", "localhost", "lotus"]

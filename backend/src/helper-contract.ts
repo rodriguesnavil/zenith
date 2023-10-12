@@ -4,14 +4,14 @@ import * as GovernorContract from "../src/ABIs/GovernorContract.json";
 import * as DealClientContract from "../src/ABIs/DealClient.json";
 
 //export const PROVIDER_URL= "http://localhost:8545";
-export const PROVIDER_URL = "http://127.0.0.1:1234/rpc/v1";
+export const PROVIDER_URL = "https://api.calibration.node.glif.io/rpc/v1";
 
 //const privateKey = process.env.PRIVATE_KEY_HARDHAT;
 const privateKey = process.env.PRIVATE_KEY_LOTUS;
 
-export const ZENITH_ADDRESS = "0x6b08D8a645e7CED381f9e6AbADe6a695a0CFE3Bf";
-export const GOVERNOR_ADDRESS = "0xf273cf3930859b12d8d479f806Ed6ced252f440D";
-export const DEALCLIENT_ADDRESS = "0xA3DF65DD60365fE1986DA0b35FfE092AED5443b8";
+export const ZENITH_ADDRESS = "0xe11dDcd59FFfd713d15b3e4d1796CE4509408563";
+export const GOVERNOR_ADDRESS = "0x55E652D84F92fB4Da2B1fE459F30B15eaaEA747B";
+export const DEALCLIENT_ADDRESS = "0x5419F024c09EaE62E80e933493c844bDA664C5bD";
 
 export const FUNCTION_TO_CALL_Reviewer = "addReviewer";
 export const FUNCTION_TO_CALL_Article = "addArticle";

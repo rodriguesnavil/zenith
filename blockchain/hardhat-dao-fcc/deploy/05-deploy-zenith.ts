@@ -19,9 +19,9 @@ const deployZenith: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     waitConfirmations: networkConfig[network.name].blockConfirmations || 1,
   })
   log(`Zenith at ${zenith.address}`)
-  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-    await verify(zenith.address, [])
-  }
+  // if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+  //   await verify(zenith.address, [])
+  // }
   const zenithContract = await ethers.getContractAt("Zenith", zenith.address)
   const timeLock = await ethers.getContract("TimeLock")
   const transferTx = await zenithContract.transferOwnership(timeLock.address)
